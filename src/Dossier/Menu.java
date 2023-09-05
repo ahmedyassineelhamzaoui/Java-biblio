@@ -381,8 +381,8 @@ public class Menu extends JFrame {
 					JOptionPane.showMessageDialog(null, "merci de remplire de les champs","erreur de validation",JOptionPane.ERROR_MESSAGE);
 				}else {
 					Livre l = new Livre(isbnField.getText(),select_auteur.getSelectedItem().toString(),titreField.getText(),Integer.parseInt(quantityField.getText()),Integer.parseInt(quantityField.getText()),0);
-					l.setModelTable(mod);
-					l.ajouterLivre(l);
+	                mod = (DefaultTableModel) tableLivre.getModel();
+					l.ajouterLivre(l,mod,livres);
 				}
 			}
 

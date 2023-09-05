@@ -5,7 +5,6 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 
@@ -18,7 +17,6 @@ public class Livre {
 	private int Q_total;
 	private int Q_dispo;
 	private int Q_perdu;
-	private DefaultTableModel modelTable;
 	ArrayList<Livre> livres = new ArrayList<>();
 	ArrayList<Livre> livreschercher = new ArrayList<>();
 	DefaultTableModel mod; // on ajoute ce model pour remplire notre tableau
@@ -33,12 +31,7 @@ public class Livre {
 		this.Q_total = Q_total;
 	}
 	public Livre() {}
-	public DefaultTableModel getModelTable() {
-		  return modelTable;
-	}
-	public void setModelTable(DefaultTableModel model) {
-		  this.modelTable = model;
-	}
+	
 	public String getISBN() {
 		return ISBN;
 	}
@@ -76,8 +69,8 @@ public class Livre {
 		this.Q_perdu = Q_perdu;
 	}
 	
-	public void ajouterLivre(Livre l) {
-		Menu m = new Menu();
+	public void ajouterLivre(Livre l,DefaultTableModel mod,ArrayList<Livre> originList) {
+		
 	    	PreparedStatement ps;
 	    	ResultSet rs;
 	    	String query = "SELECT * FROM users.livres where ISBN=? or titre=? ";
@@ -102,8 +95,8 @@ public class Livre {
 	    			if(p.executeUpdate() !=0) {
 						JOptionPane.showMessageDialog(null, "Le livre a été créer avec succés","succés",JOptionPane.PLAIN_MESSAGE);
 						Livre livre = new Livre(l.ISBN,l.nom_auteur,l.titre,l.Q_total,l.Q_total,0);
-				    	livres.add(livre);
-				    	modelTable.addRow(new Object[] {livre.getISBN(),livre.getAuteur(),livre.getTitre(),livre.getQtotal(),livre.getQdisponible(),livre.getQperdus()});
+						originList.add(livre);
+				    	mod.addRow(new Object[] {livre.getISBN(),livre.getAuteur(),livre.getTitre(),livre.getQtotal(),livre.getQdisponible(),livre.getQperdus()});
 	    			}
 	    		}catch(Exception e) {
 	    			JOptionPane.showMessageDialog(null,"imposibe d'inserer les donnes","erreur d'insertion",JOptionPane.ERROR_MESSAGE);
@@ -136,10 +129,7 @@ public class Livre {
 		 mod.removeRow(ligneSelectionnee);
 	}
 	public void modifierLivre(ArrayList<Livre> originListe,ArrayList<Livre> ls,DefaultTableModel mod,int ligneSelectionnee,String isbn,String auteur,String titre,int quant) {
-		for(int i=0;i<ls.size();i++ ) {
-			System.out.println(ls.get(i).getISBN());	
-		}
-		System.out.println(ls.get(ligneSelectionnee).getISBN());
+		
    		 PreparedStatement prs;
 		 String queryUpdate = "UPDATE users.livres  SET ISBN=?,nom_auteur=?,titre=?,q_total=?,q_disponible=?,q_perdu=?  WHERE ISBN =?";
 		 try {		 
