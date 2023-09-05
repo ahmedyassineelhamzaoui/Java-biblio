@@ -192,12 +192,19 @@ public class Menu extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				mod = (DefaultTableModel) tableLivre.getModel();
 				int ligne = tableLivre.getSelectedRow();
-				
+				ArrayList<Livre> newLivresList = new ArrayList<>();
+                for(int i=0; i<mod.getRowCount(); i++) {
+                	  String isbn = (String)mod.getValueAt(i, 0);
+                	  String auteur = (String)mod.getValueAt(i, 1);
+                	  String titre = (String)mod.getValueAt(i, 2);
+                	  int quantite = (int)mod.getValueAt(i, 3);
+                	  newLivresList.add(new Livre(isbn, auteur, titre, quantite,quantite,0));
+                }
 				if(ligne != -1) {
-					isbnField.setText(livres.get(ligne).getISBN());
-					select_auteur.setSelectedItem(livres.get(ligne).getAuteur());
-					titreField.setText(livres.get(ligne).getTitre());
-					quantityField.setText(String.valueOf(livres.get(ligne).getQtotal()));
+					isbnField.setText(newLivresList.get(ligne).getISBN());
+					select_auteur.setSelectedItem(newLivresList.get(ligne).getAuteur());
+					titreField.setText(newLivresList.get(ligne).getTitre());
+					quantityField.setText(String.valueOf(newLivresList.get(ligne).getQtotal()));
 				}
 			}
 		});
@@ -211,9 +218,19 @@ public class Menu extends JFrame {
 					if(isbnField.getText().equals("") || titreField.getText().equals("") || quantityField.getText().equals("")) {
 	                	JOptionPane.showMessageDialog(null, "merci de remplire tous les champs avant de modifier","erreur de modification",JOptionPane.ERROR_MESSAGE);
 					}else {
+						ArrayList<Livre> newLivresList = new ArrayList<>();
 						Livre l = new Livre(isbnField.getText(),select_auteur.getSelectedItem().toString(),titreField.getText(),Integer.parseInt(quantityField.getText()),Integer.parseInt(quantityField.getText()),0);
 		                mod = (DefaultTableModel) tableLivre.getModel();
-		                l.modifierLivre(livres,mod,ligne,isbnField.getText(),select_auteur.getSelectedItem().toString(),titreField.getText(),Integer.parseInt(quantityField.getText()));
+		                for(int i=0; i<mod.getRowCount(); i++) {
+		                	  String isbn = (String)mod.getValueAt(i, 0);
+		                	  String auteur = (String)mod.getValueAt(i, 1);
+		                	  String titre = (String)mod.getValueAt(i, 2);
+		                	  int quantite = (int)mod.getValueAt(i, 3);
+		                	  
+		                	  newLivresList.add(new Livre(isbn, auteur, titre, quantite,quantite,0));
+		                }
+
+		                l.modifierLivre(livres,newLivresList,mod,ligne,isbnField.getText(),select_auteur.getSelectedItem().toString(),titreField.getText(),Integer.parseInt(quantityField.getText()));
 					}
 	                
 	            }else {
@@ -258,17 +275,17 @@ public class Menu extends JFrame {
 		btnNewButton_3.setFont(new Font("Tahoma", Font.BOLD, 13));
 		btnNewButton_3.setBackground(new Color(255, 215, 0));
 		btnNewButton_3.setBounds(27, 420, 207, 49);
-		if(auth_name.getText().equals("yassine")) {
-			panel_1.add(btnNewButton_3);
-		}
-		
+		panel_1.add(btnNewButton_3);
+		 
 		
 		
 		auth_name = new JLabel("");
 		auth_name.setFont(new Font("Tahoma", Font.BOLD, 13));
 		auth_name.setBounds(25, 30, 345, 33);
 		panel_2.add(auth_name);
-		
+		//if(!auth_name.equals("yassine")) {
+			//btnNewButton_3.setVisible(false); 
+		//}
 		input_search = new JTextField();
 		input_search.setBackground(new Color(253, 245, 230));
 		input_search.setFont(new Font("Tahoma", Font.BOLD, 12));

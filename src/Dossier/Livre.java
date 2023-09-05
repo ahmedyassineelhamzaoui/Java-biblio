@@ -130,8 +130,11 @@ public class Livre {
 		 ls.remove(ligneSelectionnee);
 		 mod.removeRow(ligneSelectionnee);
 	}
-	public void modifierLivre(ArrayList<Livre> ls,DefaultTableModel mod,int ligneSelectionnee,String isbn,String auteur,String titre,int quant) {
-		
+	public void modifierLivre(ArrayList<Livre> originListe,ArrayList<Livre> ls,DefaultTableModel mod,int ligneSelectionnee,String isbn,String auteur,String titre,int quant) {
+		for(int i=0;i<ls.size();i++ ) {
+			System.out.println(ls.get(i).getISBN());	
+		}
+		System.out.println(ls.get(ligneSelectionnee).getISBN());
    		 PreparedStatement prs;
 		 String queryUpdate = "UPDATE users.livres  SET ISBN=?,nom_auteur=?,titre=?,q_total=?,q_disponible=?,q_perdu=?  WHERE ISBN =?";
 		 try {		 
@@ -142,8 +145,17 @@ public class Livre {
 			 prs.setInt(4,quant);
 			 prs.setInt(5, quant);
 			 prs.setInt(6, 0);
-			 prs.setString(7,ls.get(ligneSelectionnee).getISBN() );
+			 prs.setString(7,ls.get(ligneSelectionnee).getISBN());
 			 if(prs.executeUpdate() != 0) {
+				 for(int i=0;i<originListe.size();i++) {
+					 if(originListe.get(i).ISBN.equals(ls.get(ligneSelectionnee).getISBN())){
+						 originListe.get(i).setISBN(isbn);
+						 originListe.get(i).setAuteur(auteur);
+						 originListe.get(i).setTitre(titre);
+						 originListe.get(i).setQtotal(quant);
+						 break;
+					 }
+				 }
 				 ls.get(ligneSelectionnee).setISBN(isbn);
 				 ls.get(ligneSelectionnee).setAuteur(auteur);
 				 ls.get(ligneSelectionnee).setTitre(titre);
@@ -186,7 +198,6 @@ public class Livre {
 				    };
 			    mod.addRow(data);
 			}
-			
 		}
 	}
 	public void listerLivreEmprunter() {
