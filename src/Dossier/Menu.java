@@ -43,6 +43,8 @@ public class Menu extends JFrame {
     
     ArrayList<Livre> livres = new ArrayList<>();
     DefaultTableModel mod; // on ajoute ce model pour remplire notre tableau
+    private JTextField quantity_dispo;
+    private JTextField qauntity_perdu;
     
     public JLabel getAuthname() {
     	return auth_name;
@@ -61,6 +63,12 @@ public class Menu extends JFrame {
 	}
 	public JTextField getQuantityField() {
 		return  quantityField;
+	}
+	public JTextField getQuantityAvailableField() {
+		return  quantity_dispo;
+	}
+	public JTextField getQuantityLostField() {
+		return  qauntity_perdu;
 	}
    
 	/**
@@ -157,17 +165,38 @@ public class Menu extends JFrame {
 		scrollPane.setBounds(10, 292, 892, 358);
 		panel_2.add(scrollPane);
 		
-		TextField isbnField = new TextField();
+		isbnField = new JTextField();
 		isbnField.setBackground(new Color(255, 255, 224));
-		isbnField.setBounds(10, 111, 228, 33);
+		isbnField.setBounds(10, 111, 123, 33);
 		panel_2.add(isbnField);
 		
-		TextField titreField = new TextField();
+		titreField = new JTextField();
 		titreField.setBackground(new Color(255, 255, 224));
-		titreField.setBounds(475, 111, 271, 33);
+		titreField.setBounds(316, 111, 230, 33);
 		panel_2.add(titreField);
 		
-		TextField quantityField = new TextField();
+		quantityField = new JTextField();
+		JLabel lblNewLabel_5 = new JLabel("Quantité disponible");
+		lblNewLabel_5.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblNewLabel_5.setBounds(668, 89, 124, 14);
+		panel_2.add(lblNewLabel_5);
+		
+		quantity_dispo = new JTextField();
+		quantity_dispo.setBackground(new Color(255, 255, 224));
+		quantity_dispo.setBounds(668, 111, 128, 33);
+		panel_2.add(quantity_dispo);
+		quantity_dispo.setColumns(10);
+		
+		qauntity_perdu = new JTextField();
+		qauntity_perdu.setBackground(new Color(255, 255, 224));
+		qauntity_perdu.setBounds(812, 112, 101, 32);
+		panel_2.add(qauntity_perdu);
+		qauntity_perdu.setColumns(10);
+		
+		JLabel lblNewLabel_6 = new JLabel("Quantié perdu");
+		lblNewLabel_6.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lblNewLabel_6.setBounds(810, 89, 103, 14);
+		panel_2.add(lblNewLabel_6);
 		quantityField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
@@ -184,7 +213,8 @@ public class Menu extends JFrame {
 		
 		String quary = "SELECT * FROM auteur";
 		JComboBox<String> select_auteur = new JComboBox<String>();
-		select_auteur.setBounds(251, 111, 206, 33);
+		select_auteur.setBackground(new Color(255, 255, 224));
+		select_auteur.setBounds(139, 111, 165, 33);
 		panel_2.add(select_auteur);
 		
 		try {
@@ -208,13 +238,17 @@ public class Menu extends JFrame {
                 	  String auteur = (String)mod.getValueAt(i, 1);
                 	  String titre = (String)mod.getValueAt(i, 2);
                 	  int quantite = (int)mod.getValueAt(i, 3);
-                	  newLivresList.add(new Livre(isbn, auteur, titre, quantite,quantite,0));
+                	  int quantiteDispo = (int)mod.getValueAt(i, 4);
+                	  int quantitePerdu = (int)mod.getValueAt(i, 5);
+                	  newLivresList.add(new Livre(isbn, auteur, titre, quantite,quantiteDispo,quantitePerdu));
                 }
 				if(ligne != -1) {
 					isbnField.setText(newLivresList.get(ligne).getISBN());
 					select_auteur.setSelectedItem(newLivresList.get(ligne).getAuteur());
 					titreField.setText(newLivresList.get(ligne).getTitre());
 					quantityField.setText(String.valueOf(newLivresList.get(ligne).getQtotal()));
+					quantity_dispo.setText(String.valueOf(newLivresList.get(ligne).getQdisponible()));
+					qauntity_perdu.setText(String.valueOf(newLivresList.get(ligne).getQperdus()));
 				}
 			}
 		});
@@ -225,24 +259,23 @@ public class Menu extends JFrame {
 				mod = (DefaultTableModel) tableLivre.getModel();
 			    int ligne = tableLivre.getSelectedRow();
 				if(ligne != -1) {
-					if(isbnField.getText().equals("") || titreField.getText().equals("") || quantityField.getText().equals("")) {
+					if(isbnField.getText().equals("") || titreField.getText().equals("") || quantityField.getText().equals("") || quantity_dispo.getText().equals("") || qauntity_perdu.getText().equals("") ) {
 	                	JOptionPane.showMessageDialog(null, "merci de remplire tous les champs avant de modifier","erreur de modification",JOptionPane.ERROR_MESSAGE);
 					}else {
 						ArrayList<Livre> newLivresList = new ArrayList<>();
-						Livre l = new Livre(isbnField.getText(),select_auteur.getSelectedItem().toString(),titreField.getText(),Integer.parseInt(quantityField.getText()),Integer.parseInt(quantityField.getText()),0);
+						Livre l = new Livre(isbnField.getText(),select_auteur.getSelectedItem().toString(),titreField.getText(),Integer.parseInt(quantityField.getText()),Integer.parseInt(quantity_dispo.getText()),Integer.parseInt(qauntity_perdu.getText()));
 		                mod = (DefaultTableModel) tableLivre.getModel();
 		                for(int i=0; i<mod.getRowCount(); i++) {
 		                	  String isbn = (String)mod.getValueAt(i, 0);
 		                	  String auteur = (String)mod.getValueAt(i, 1);
 		                	  String titre = (String)mod.getValueAt(i, 2);
 		                	  int quantite = (int)mod.getValueAt(i, 3);
-		                	  
-		                	  newLivresList.add(new Livre(isbn, auteur, titre, quantite,quantite,0));
+		                	  int quantitedispo = (int)mod.getValueAt(i, 4);
+		                	  int quantiteperdu = (int)mod.getValueAt(i, 5);
+		                	  newLivresList.add(new Livre(isbn, auteur, titre, quantite,quantitedispo,quantiteperdu));
 		                }
-
-		                l.modifierLivre(livres,newLivresList,mod,ligne,isbnField.getText(),select_auteur.getSelectedItem().toString(),titreField.getText(),Integer.parseInt(quantityField.getText()));
+		                l.modifierLivre(livres,newLivresList,mod,ligne,isbnField.getText(),select_auteur.getSelectedItem().toString(),titreField.getText(),Integer.parseInt(quantityField.getText()),Integer.parseInt(quantity_dispo.getText()),Integer.parseInt(qauntity_perdu.getText()));
 					}
-	                
 	            }else {
 	                	JOptionPane.showMessageDialog(null, "selectioner une ligne pour le modifier","erreur de selection",JOptionPane.ERROR_MESSAGE);
 	            }
@@ -273,15 +306,15 @@ public class Menu extends JFrame {
 			                	  String auteur = (String)mod.getValueAt(i, 1);
 			                	  String titre = (String)mod.getValueAt(i, 2);
 			                	  int quantite = (int)mod.getValueAt(i, 3);
-			                	  
-			                	  newLivresList.add(new Livre(isbn, auteur, titre, quantite,quantite,0));
+			                	  int quantitedispo = (int)mod.getValueAt(i, 4);
+			                	  int quantiteperdu = (int)mod.getValueAt(i, 5);
+			                	  newLivresList.add(new Livre(isbn, auteur, titre, quantite,quantitedispo,quantiteperdu));
 			                }
 	                		l.supprimerLivre(livres,newLivresList,mod,ligne);
 	                	}             	
 	                }else {
 	                	JOptionPane.showMessageDialog(null, "selectioner une ligne pour le supprimer","erreur de selection",JOptionPane.ERROR_MESSAGE);
-	                }
-				
+	                }	
 			}
 		});
 		btnNewButton_2.setFont(new Font("Tahoma", Font.BOLD, 13));
@@ -341,8 +374,6 @@ public class Menu extends JFrame {
 				}else {
 	        		l.chercherLivre(livres,mod,search_name); 
 				}
-        		
-        		
 			}
 		});
 		search_button.setFont(new Font("Tahoma", Font.BOLD, 13));
@@ -357,7 +388,7 @@ public class Menu extends JFrame {
 		
 		
 		quantityField.setBackground(new Color(255, 255, 224));
-		quantityField.setBounds(771, 111, 146, 33);
+		quantityField.setBounds(552, 111, 104, 33);
 		panel_2.add(quantityField);
 		
 		
@@ -371,17 +402,17 @@ public class Menu extends JFrame {
 		
 		JLabel lblNewLabel_2 = new JLabel("Auteur de Livre");
 		lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblNewLabel_2.setBounds(252, 89, 95, 14);
+		lblNewLabel_2.setBounds(149, 86, 95, 14);
 		panel_2.add(lblNewLabel_2);
 		
 		JLabel lblNewLabel_3 = new JLabel("Titre de livre");
 		lblNewLabel_3.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblNewLabel_3.setBounds(475, 89, 95, 14);
+		lblNewLabel_3.setBounds(349, 88, 95, 14);
 		panel_2.add(lblNewLabel_3);
 		
 		JLabel lblNewLabel_4 = new JLabel("Quantité total");
 		lblNewLabel_4.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblNewLabel_4.setBounds(771, 91, 104, 14);
+		lblNewLabel_4.setBounds(552, 88, 104, 14);
 		panel_2.add(lblNewLabel_4);
 		
 		JButton refresh = new JButton("rafraîchir le tableau");
@@ -397,13 +428,15 @@ public class Menu extends JFrame {
 		panel_2.add(refresh);
 		
 		
+		
+		
 		JButton btnNewButton = new JButton("Ajouter le livre");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(isbnField.getText().equals("") || titreField.getText().equals("") || quantityField.getText().equals("")) {
-					JOptionPane.showMessageDialog(null, "merci de remplire de les champs","erreur de validation",JOptionPane.ERROR_MESSAGE);
+				if(isbnField.getText().equals("") || titreField.getText().equals("") || quantityField.getText().equals("") || quantity_dispo.getText().equals("") || qauntity_perdu.getText().equals("")) {
+					JOptionPane.showMessageDialog(null, "merci de remplire tous les champs","erreur de validation",JOptionPane.ERROR_MESSAGE);
 				}else {
-					Livre l = new Livre(isbnField.getText(),select_auteur.getSelectedItem().toString(),titreField.getText(),Integer.parseInt(quantityField.getText()),Integer.parseInt(quantityField.getText()),0);
+					Livre l = new Livre(isbnField.getText(),select_auteur.getSelectedItem().toString(),titreField.getText(),Integer.parseInt(quantityField.getText()),Integer.parseInt(quantity_dispo.getText()),Integer.parseInt(qauntity_perdu.getText()));
 	                mod = (DefaultTableModel) tableLivre.getModel();
 					l.ajouterLivre(l,mod,livres);
 				}

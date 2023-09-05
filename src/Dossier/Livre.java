@@ -90,11 +90,11 @@ public class Livre {
 	    			p.setString(2, l.nom_auteur);
 	    			p.setString(3, l.titre);
 	    			p.setLong(4, Integer.parseInt(String.valueOf(l.Q_total)));
-	    			p.setInt(5, Integer.parseInt(String.valueOf(l.Q_total)));
-	    			p.setInt(6,0);
+	    			p.setInt(5, Integer.parseInt(String.valueOf(l.Q_dispo)));
+	    			p.setInt(6,l.Q_perdu);
 	    			if(p.executeUpdate() !=0) {
 						JOptionPane.showMessageDialog(null, "Le livre a été créer avec succés","succés",JOptionPane.PLAIN_MESSAGE);
-						Livre livre = new Livre(l.ISBN,l.nom_auteur,l.titre,l.Q_total,l.Q_total,0);
+						Livre livre = new Livre(l.ISBN,l.nom_auteur,l.titre,l.Q_total,l.Q_dispo,l.Q_perdu);
 						originList.add(livre);
 				    	mod.addRow(new Object[] {livre.getISBN(),livre.getAuteur(),livre.getTitre(),livre.getQtotal(),livre.getQdisponible(),livre.getQperdus()});
 	    			}
@@ -128,7 +128,7 @@ public class Livre {
 		 }
 		 mod.removeRow(ligneSelectionnee);
 	}
-	public void modifierLivre(ArrayList<Livre> originListe,ArrayList<Livre> ls,DefaultTableModel mod,int ligneSelectionnee,String isbn,String auteur,String titre,int quant) {
+	public void modifierLivre(ArrayList<Livre> originListe,ArrayList<Livre> ls,DefaultTableModel mod,int ligneSelectionnee,String isbn,String auteur,String titre,int quant,int quantdispo,int quantperdu) {
 		
    		 PreparedStatement prs;
 		 String queryUpdate = "UPDATE users.livres  SET ISBN=?,nom_auteur=?,titre=?,q_total=?,q_disponible=?,q_perdu=?  WHERE ISBN =?";
@@ -138,8 +138,8 @@ public class Livre {
 			 prs.setString(2,auteur );
 			 prs.setString(3,titre );
 			 prs.setInt(4,quant);
-			 prs.setInt(5, quant);
-			 prs.setInt(6, 0);
+			 prs.setInt(5, quantdispo);
+			 prs.setInt(6, quantperdu);
 			 prs.setString(7,ls.get(ligneSelectionnee).getISBN());
 			 if(prs.executeUpdate() != 0) {
 				 for(int i=0;i<originListe.size();i++) {
@@ -148,6 +148,8 @@ public class Livre {
 						 originListe.get(i).setAuteur(auteur);
 						 originListe.get(i).setTitre(titre);
 						 originListe.get(i).setQtotal(quant);
+						 originListe.get(i).setQdisponible(quantdispo);
+						 originListe.get(i).setQperdus(quantperdu);
 						 break;
 					 }
 				 }
@@ -155,10 +157,14 @@ public class Livre {
 				 ls.get(ligneSelectionnee).setAuteur(auteur);
 				 ls.get(ligneSelectionnee).setTitre(titre);
 				 ls.get(ligneSelectionnee).setQtotal(quant);
+				 ls.get(ligneSelectionnee).setQdisponible(quantdispo);
+				 ls.get(ligneSelectionnee).setQperdus(quantperdu);
 				 mod.setValueAt(isbn, ligneSelectionnee, 0);
 				 mod.setValueAt(auteur, ligneSelectionnee, 1);
 				 mod.setValueAt(titre, ligneSelectionnee, 2);
 				 mod.setValueAt(quant, ligneSelectionnee, 3);
+				 mod.setValueAt(quantdispo, ligneSelectionnee, 4);
+				 mod.setValueAt(quantperdu, ligneSelectionnee, 5);
 			 JOptionPane.showMessageDialog(null, "le livre a été bien Modifier","succés",JOptionPane.PLAIN_MESSAGE);
 			 }
 			 
