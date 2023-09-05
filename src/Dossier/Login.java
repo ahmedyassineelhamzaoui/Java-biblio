@@ -132,32 +132,24 @@ public class Login extends JFrame {
 						rs = ps.executeQuery();
 						if(rs.next()) {
 							dispose();
-							if(Integer.parseInt(rs.getString("role"))  == 1) {
+							
+							String role ="";
+							if(Integer.parseInt(rs.getString("role")) == 2) {
+								role ="Emprunteur";
+							}else {
+								role ="Bibliothécaire";
+							}
 								Menu menu = new Menu();
 								menu.setVisible(true);
 								menu.setLocationRelativeTo(null);
 								menu.getAuthname().setText("Bienvenu "+rs.getString("name"));
+								menu.getRole().setText(role);
 								InputStream is = rs.getBinaryStream("image");
 								if(is != null) {
 								  BufferedImage image = ImageIO.read(is);  // ici l'objet image conteint l'image corespendant a l'image existe on db
 								  ImageIcon icon = new ImageIcon(image);
 								  menu.getImage().setIcon(icon);
-								}
-								
-							}else {
-								MenuUser menu = new MenuUser();
-								menu.getAuthname().setText("Bienvenu "+rs.getString("name"));
-								InputStream is = rs.getBinaryStream("image");
-								if(is != null) {
-								  BufferedImage image = ImageIO.read(is);  // ici l'objet image conteint l'image corespendant a l'image existe on db
-								  ImageIcon icon = new ImageIcon(image);
-								  menu.getImage().setIcon(icon);
-								}
-								menu.setVisible(true);
-								menu.setLocationRelativeTo(null);
-							}
-							
-							
+								}	
 						}else {
 							JOptionPane.showMessageDialog(null,"cin ou mot de passe est incorrect","données incorrectes",JOptionPane.ERROR_MESSAGE);
 						}

@@ -34,6 +34,7 @@ public class Menu extends JFrame {
 
 	private JPanel contentPane;
     private JLabel auth_name;
+    private JLabel user_role;
     private JLabel user_image;
     private JTextField input_search;
     private JTextField isbnField;
@@ -49,6 +50,9 @@ public class Menu extends JFrame {
     public JLabel getImage() {
     	return user_image;
     }
+    public JLabel getRole() {
+    	return user_role;
+    }
     public JTextField getIsbnField() {
 		return  isbnField;
 	}
@@ -58,7 +62,7 @@ public class Menu extends JFrame {
 	public JTextField getQuantityField() {
 		return  quantityField;
 	}
-    
+   
 	/**
 	 * Launch the application.
 	 */
@@ -102,6 +106,12 @@ public class Menu extends JFrame {
 		user_image.setHorizontalAlignment(SwingConstants.CENTER);
 		user_image.setBounds(70, 22, 118, 120);
 		panel_1.add(user_image);
+		
+		user_role = new JLabel("role");
+		user_role.setHorizontalAlignment(SwingConstants.CENTER);
+		user_role.setFont(new Font("Tahoma", Font.BOLD, 12));
+		user_role.setBounds(70, 153, 118, 14);
+		panel_1.add(user_role);
 		
 		
 		JTable tableLivre = new JTable();
@@ -242,7 +252,11 @@ public class Menu extends JFrame {
 		btnNewButton_1.setBackground(new Color(255, 215, 0));
 		btnNewButton_1.setBounds(27, 263, 207, 49);
 		panel_1.add(btnNewButton_1);
-		
+		if(user_role.getText().equals("Emprunteur")) {
+			btnNewButton_1.setVisible(false);
+		}else {
+			btnNewButton_1.setVisible(true);
+		}
 		JButton btnNewButton_2 = new JButton("Supprimer Le livre");
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -274,7 +288,11 @@ public class Menu extends JFrame {
 		btnNewButton_2.setBackground(new Color(255, 215, 0));
 		btnNewButton_2.setBounds(27, 338, 207, 49);
 		panel_1.add(btnNewButton_2);
-		
+		if(user_role.getText().equals("Emprunteur")) {
+			btnNewButton_2.setVisible(false);
+		}else {
+			btnNewButton_2.setVisible(true);
+		}
 		JButton btnNewButton_3 = new JButton("Emprunter le livre");
 		btnNewButton_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -292,9 +310,14 @@ public class Menu extends JFrame {
 		auth_name.setFont(new Font("Tahoma", Font.BOLD, 13));
 		auth_name.setBounds(25, 30, 345, 33);
 		panel_2.add(auth_name);
-		//if(!auth_name.equals("yassine")) {
-			//btnNewButton_3.setVisible(false); 
-		//}
+		
+		
+		
+		if(user_role.getText().equals("Emprunteur")) {
+			btnNewButton_3.setVisible(true);
+		}else {
+			btnNewButton_3.setVisible(false);
+		}
 		input_search = new JTextField();
 		input_search.setBackground(new Color(253, 245, 230));
 		input_search.setFont(new Font("Tahoma", Font.BOLD, 12));
@@ -392,6 +415,12 @@ public class Menu extends JFrame {
 		btnNewButton.setBackground(new Color(255, 215, 0));
 		btnNewButton.setBounds(27, 185, 207, 49);
 		panel_1.add(btnNewButton);
+		
+		if(user_role.getText().equals("Emprunteur")) {
+			btnNewButton.setVisible(false);
+		}else {
+			btnNewButton.setVisible(true);
+		}
 		
 		
 	}
