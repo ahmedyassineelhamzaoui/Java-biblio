@@ -114,7 +114,7 @@ public class Livre {
 	    	} 
 	}
 	
-	public void supprimerLivre(ArrayList<Livre> ls,DefaultTableModel mod,int ligneSelectionnee) {
+	public void supprimerLivre(ArrayList<Livre> originListe,ArrayList<Livre> ls,DefaultTableModel mod,int ligneSelectionnee) {
 		 
 		 PreparedStatement prs;
 		 String queryDelete = "DELETE FROM users.livres WHERE ISBN=?";
@@ -127,7 +127,12 @@ public class Livre {
 		 }catch(Exception ex) {
 			  JOptionPane.showMessageDialog(null, "impossible de supprimer ce livre","erreur de suppresion",JOptionPane.ERROR_MESSAGE);
 		 }
-		 ls.remove(ligneSelectionnee);
+		 for(int i=0;i<originListe.size();i++) {
+			 if(originListe.get(i).ISBN.equals(ls.get(ligneSelectionnee).getISBN())){
+				 originListe.remove(i);
+				 break;
+			 }
+		 }
 		 mod.removeRow(ligneSelectionnee);
 	}
 	public void modifierLivre(ArrayList<Livre> originListe,ArrayList<Livre> ls,DefaultTableModel mod,int ligneSelectionnee,String isbn,String auteur,String titre,int quant) {

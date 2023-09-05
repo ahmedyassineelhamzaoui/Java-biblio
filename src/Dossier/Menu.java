@@ -252,8 +252,17 @@ public class Menu extends JFrame {
 	                	int n = JOptionPane.showConfirmDialog(null, "vous voulez vraiment supprimer ce livre");
 	                	if(n==0) {	
 	                		Livre l = new Livre();
-	                		mod = (DefaultTableModel) tableLivre.getModel();
-	                		l.supprimerLivre(livres,mod,ligne); 
+	                		ArrayList<Livre> newLivresList = new ArrayList<>();
+			                mod = (DefaultTableModel) tableLivre.getModel();
+			                for(int i=0; i<mod.getRowCount(); i++) {
+			                	  String isbn = (String)mod.getValueAt(i, 0);
+			                	  String auteur = (String)mod.getValueAt(i, 1);
+			                	  String titre = (String)mod.getValueAt(i, 2);
+			                	  int quantite = (int)mod.getValueAt(i, 3);
+			                	  
+			                	  newLivresList.add(new Livre(isbn, auteur, titre, quantite,quantite,0));
+			                }
+	                		l.supprimerLivre(livres,newLivresList,mod,ligne);
 	                	}             	
 	                }else {
 	                	JOptionPane.showMessageDialog(null, "selectioner une ligne pour le supprimer","erreur de selection",JOptionPane.ERROR_MESSAGE);
