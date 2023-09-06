@@ -253,7 +253,24 @@ public class Menu extends JFrame {
 				}
 			}
 		});
-		
+		quantity_dispo.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				char k= e.getKeyChar();
+				if(!Character.isDigit(k)) {
+					e.consume();
+				}
+			}
+		});
+		qauntity_perdu.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				char k= e.getKeyChar();
+				if(!Character.isDigit(k)) {
+					e.consume();
+				}
+			}
+		});
 		
 		PreparedStatement ps;
 		ResultSet rs;
