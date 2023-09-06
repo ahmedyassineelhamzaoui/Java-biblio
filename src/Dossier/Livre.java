@@ -203,25 +203,26 @@ public class Livre {
 		   	            	calendar.add(java.util.Calendar.DAY_OF_MONTH, 2);
 		   	            	java.sql.Timestamp returnTimestamp = new java.sql.Timestamp(calendar.getTimeInMillis());
 		   	            	ps.setTimestamp(3, returnTimestamp);
-   	            	      ps.setString(4, "emprunté");
-   	            	      ps.setInt(5, user_id);
-	   	            	   if(ps.executeUpdate() != 0) {
-			   	   				 for(int i=0;i<originListe.size();i++) {
-			   	   					 if(originListe.get(i).ISBN.equals(newLivresList.get(ligneSelectionnee).getISBN())){
-			   	   						 originListe.get(i).setQdisponible(quantité_disponible - qty);
-		   	   						      break;
-			   	   					 }
-			   	   				 }
+	   	            	    ps.setString(4, "emprunté");
+	   	            	    ps.setInt(5, user_id);
+		   	            	if(ps.executeUpdate() != 0) {
+				   	   				 for(int i=0;i<originListe.size();i++) {
+				   	   					 if(originListe.get(i).ISBN.equals(newLivresList.get(ligneSelectionnee).getISBN())){
+				   	   						 originListe.get(i).setQdisponible(quantité_disponible - qty);
+			   	   						      break;
+				   	   					 }
+				   	   				 }
 			   	   				
 			   	   			     newLivresList.get(ligneSelectionnee).setQdisponible(quantité_disponible - qty );
 			   	   				 mod.setValueAt(quantité_disponible - qty, ligneSelectionnee, 4);
 			   	   				 
 				   	             JOptionPane.showMessageDialog(null, "Le livre a été bien emprunté");
 				   	             PreparedStatement pst;
-				   	             String queryUpdate = "UPDATE livres SET q_disponible = ?";
+				   	             String queryUpdate = "UPDATE livres SET q_disponible = ? WHERE ISBN =? ";
 				   	             try {
 				   	            	 pst = ConnexionDB.getConnection().prepareStatement(queryUpdate);
 					   	             pst.setInt(1,quantité_disponible - qty);
+					   	             pst.setString(2, (String) mod.getValueAt(ligneSelectionnee, 0));
 					   	             pst.execute();
 				   	             }catch(Exception e) {
 				   	            	  JOptionPane.showMessageDialog(null,"impossible de metre a jour","erreur de modification",JOptionPane.ERROR_MESSAGE);
