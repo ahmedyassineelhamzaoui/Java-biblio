@@ -226,7 +226,6 @@ public class Livre {
 				   	             }catch(Exception e) {
 				   	            	  JOptionPane.showMessageDialog(null,"impossible de metre a jour","erreur de modification",JOptionPane.ERROR_MESSAGE);
 				   	             }
-				   	              // don't forget to change the quantity avaliable in book table
 	   	            	   }
 	   	              }catch(Exception ex) {
 	   	            	  JOptionPane.showMessageDialog(null,"impossible d'emprunté ce livre pour le moment","erreur d'emprunt",JOptionPane.ERROR_MESSAGE);
