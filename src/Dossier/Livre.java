@@ -83,25 +83,36 @@ public class Livre {
 	    	if(rs.next()) {
 	    		JOptionPane.showMessageDialog(null,"ISBN ou titre de livre est déja existe","insertion refusé",JOptionPane.ERROR_MESSAGE);
 	    	}else {
-	    		PreparedStatement p;
-	    		String queryInsert = "INSERT INTO users.livres(ISBN,nom_auteur,titre,q_total,q_disponible,q_perdu) VALUES(?,?,?,?,?,?)";
-	    		try {
-	    			p = ConnexionDB.getConnection().prepareStatement(queryInsert);
-	    			p.setString(1, l.ISBN);
-	    			p.setString(2, l.nom_auteur);
-	    			p.setString(3, l.titre);
-	    			p.setLong(4, Integer.parseInt(String.valueOf(l.Q_total)));
-	    			p.setInt(5, Integer.parseInt(String.valueOf(l.Q_dispo)));
-	    			p.setInt(6,l.Q_perdu);
-	    			if(p.executeUpdate() !=0) {
-						JOptionPane.showMessageDialog(null, "Le livre a été créer avec succés","succés",JOptionPane.PLAIN_MESSAGE);
-						Livre livre = new Livre(l.ISBN,l.nom_auteur,l.titre,l.Q_total,l.Q_dispo,l.Q_perdu);
-						originList.add(livre);
-				    	mod.addRow(new Object[] {livre.getISBN(),livre.getAuteur(),livre.getTitre(),livre.getQtotal(),livre.getQdisponible(),livre.getQperdus()});
-	    			}
-	    		}catch(Exception e) {
-	    			JOptionPane.showMessageDialog(null,"imposibe d'inserer les donnes","erreur d'insertion",JOptionPane.ERROR_MESSAGE);
+	    		int quantiteDisponible = l.Q_dispo;
+	    		int quantitePerdue =  l.Q_perdu;
+	    		int quantiteTotale = l.Q_total;
+	    		if(l.Q_total< l.Q_dispo + l.Q_perdu) {
+	    			  String message = "Attention, la somme de la quantité disponible (" 
+	    			             + quantiteDisponible + ") et de la quantité perdue (" 
+	    			             + quantitePerdue + ") ne peut pas dépasser la quantité totale ("+ quantiteTotale + ")";
+	    			JOptionPane.showMessageDialog(null, message,"donner des donnees valides",JOptionPane.ERROR_MESSAGE);
+	    		}else {
+	    			PreparedStatement p;
+		    		String queryInsert = "INSERT INTO users.livres(ISBN,nom_auteur,titre,q_total,q_disponible,q_perdu) VALUES(?,?,?,?,?,?)";
+		    		try {
+		    			p = ConnexionDB.getConnection().prepareStatement(queryInsert);
+		    			p.setString(1, l.ISBN);
+		    			p.setString(2, l.nom_auteur);
+		    			p.setString(3, l.titre);
+		    			p.setLong(4, Integer.parseInt(String.valueOf(l.Q_total)));
+		    			p.setInt(5, Integer.parseInt(String.valueOf(l.Q_dispo)));
+		    			p.setInt(6,l.Q_perdu);
+		    			if(p.executeUpdate() !=0) {
+							JOptionPane.showMessageDialog(null, "Le livre a été créer avec succés","succés",JOptionPane.PLAIN_MESSAGE);
+							Livre livre = new Livre(l.ISBN,l.nom_auteur,l.titre,l.Q_total,l.Q_dispo,l.Q_perdu);
+							originList.add(livre);
+					    	mod.addRow(new Object[] {livre.getISBN(),livre.getAuteur(),livre.getTitre(),livre.getQtotal(),livre.getQdisponible(),livre.getQperdus()});
+		    			}
+		    		}catch(Exception e) {
+		    			JOptionPane.showMessageDialog(null,"imposibe d'inserer les donnes","erreur d'insertion",JOptionPane.ERROR_MESSAGE);
+		    		}
 	    		}
+	    		
 	    	}
 	    	}catch(Exception e) {
 	    		JOptionPane.showMessageDialog(null,"vérification échoué","erreur",JOptionPane.ERROR_MESSAGE);
