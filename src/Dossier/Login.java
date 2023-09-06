@@ -139,7 +139,7 @@ public class Login extends JFrame {
 							}else {
 								role ="Bibliothécaire";
 							}
-								Menu menu = new Menu();
+								Menu menu = new Menu(role);
 								menu.setVisible(true);
 								menu.setLocationRelativeTo(null);
 								menu.getAuthname().setText("Bienvenu "+rs.getString("name"));
