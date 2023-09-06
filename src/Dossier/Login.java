@@ -144,6 +144,7 @@ public class Login extends JFrame {
 								menu.setLocationRelativeTo(null);
 								menu.getAuthname().setText("Bienvenu "+rs.getString("name"));
 								menu.getRole().setText(role);
+								menu.setResizable(false);
 								InputStream is = rs.getBinaryStream("image");
 								if(is != null) {
 								  BufferedImage image = ImageIO.read(is);  // ici l'objet image conteint l'image corespendant a l'image existe on db

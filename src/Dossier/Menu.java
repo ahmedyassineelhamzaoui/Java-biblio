@@ -82,10 +82,10 @@ public class Menu extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Login l = new Login();
-					l.setVisible(true);
-					l.setResizable(false);
-					l.setLocationRelativeTo(null);
+					Menu frame = new Menu();
+					frame.setVisible(true);
+					frame.setResizable(false);
+					frame.setLocationRelativeTo(null);	
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -97,12 +97,14 @@ public class Menu extends JFrame {
 	 * Create the frame.
 	 */
 	public Menu() {
+  
 		
 	}
     public Menu(String role) {
+    	
     	this.userRole = role;
     	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1200, 700);
+		setBounds(100, 100, 1370, 750);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -111,7 +113,7 @@ public class Menu extends JFrame {
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(new Color(0, 128, 128));
-		panel_1.setBounds(0, 0, 258, 661);
+		panel_1.setBounds(0, 0, 258, 704);
 		contentPane.add(panel_1);
 		panel_1.setLayout(null);
 		
@@ -160,15 +162,15 @@ public class Menu extends JFrame {
 		}
 		
 		JPanel panel_2 = new JPanel();
-		panel_2.setBackground(new Color(255, 255, 255));
-		panel_2.setBounds(257, 0, 927, 661);
+		panel_2.setBackground(new Color(245, 255, 250));
+		panel_2.setBounds(257, 0, 1112, 704);
 		contentPane.add(panel_2);
 		panel_2.setLayout(null);
 		// Create a JScrollPane and add the table to it
 		JScrollPane scrollPane = new JScrollPane(tableLivre);
 
 		// Add the scroll pane to your panel or frame
-		scrollPane.setBounds(11, 361, 892, 289);
+		scrollPane.setBounds(11, 361, 1075, 289);
 		panel_2.add(scrollPane);
 		
 		JLabel total_statistique = new JLabel("");
@@ -196,24 +198,24 @@ public class Menu extends JFrame {
 		
 		titreField = new JTextField();
 		titreField.setBackground(new Color(255, 255, 224));
-		titreField.setBounds(317, 215, 230, 33);
+		titreField.setBounds(357, 216, 230, 33);
 		panel_2.add(titreField);
 		
 		quantityField = new JTextField();
 		JLabel lblNewLabel_5 = new JLabel("Quantité disponible");
 		lblNewLabel_5.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblNewLabel_5.setBounds(669, 192, 124, 14);
+		lblNewLabel_5.setBounds(749, 191, 124, 14);
 		panel_2.add(lblNewLabel_5);
 		
 		quantity_dispo = new JTextField();
 		quantity_dispo.setBackground(new Color(255, 255, 224));
-		quantity_dispo.setBounds(669, 214, 128, 33);
+		quantity_dispo.setBounds(751, 216, 138, 33);
 		panel_2.add(quantity_dispo);
 		quantity_dispo.setColumns(10);
 		
 		qauntity_perdu = new JTextField();
 		qauntity_perdu.setBackground(new Color(255, 255, 224));
-		qauntity_perdu.setBounds(808, 213, 101, 32);
+		qauntity_perdu.setBounds(911, 216, 151, 32);
 		panel_2.add(qauntity_perdu);
 		qauntity_perdu.setColumns(10);
 		
@@ -236,7 +238,7 @@ public class Menu extends JFrame {
 		
 		JLabel lblNewLabel_6 = new JLabel("Quantié perdu");
 		lblNewLabel_6.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblNewLabel_6.setBounds(807, 191, 103, 14);
+		lblNewLabel_6.setBounds(909, 192, 103, 14);
 		panel_2.add(lblNewLabel_6);
 		quantityField.addKeyListener(new KeyAdapter() {
 			@Override
@@ -255,7 +257,7 @@ public class Menu extends JFrame {
 		String quary = "SELECT * FROM auteur";
 		JComboBox<String> select_auteur = new JComboBox<String>();
 		select_auteur.setBackground(new Color(255, 255, 224));
-		select_auteur.setBounds(144, 215, 165, 33);
+		select_auteur.setBounds(144, 215, 203, 33);
 		panel_2.add(select_auteur);
 		
 		try {
@@ -326,6 +328,7 @@ public class Menu extends JFrame {
 		btnNewButton_1.setBackground(new Color(255, 215, 0));
 		btnNewButton_1.setBounds(27, 263, 207, 49);
 		panel_1.add(btnNewButton_1);
+		
 		if(userRole.equals("Emprunteur")) {
 			btnNewButton_1.setVisible(false);
 		}else {
@@ -377,12 +380,12 @@ public class Menu extends JFrame {
 		btnNewButton_3.setBackground(new Color(255, 215, 0));
 		btnNewButton_3.setBounds(27, 420, 207, 49);
 		panel_1.add(btnNewButton_3);
+		
 		if(userRole.equals("Emprunteur")) {
 			btnNewButton_3.setVisible(true);
 		}else {
 			btnNewButton_3.setVisible(false);
 		}
-		
 		
 		auth_name = new JLabel("");
 		auth_name.setFont(new Font("Tahoma", Font.BOLD, 13));
@@ -427,7 +430,7 @@ public class Menu extends JFrame {
 		
 		
 		quantityField.setBackground(new Color(255, 255, 224));
-		quantityField.setBounds(554, 215, 104, 33);
+		quantityField.setBounds(597, 216, 144, 33);
 		panel_2.add(quantityField);
 		
 		
@@ -446,12 +449,12 @@ public class Menu extends JFrame {
 		
 		JLabel lblNewLabel_3 = new JLabel("Titre de livre");
 		lblNewLabel_3.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblNewLabel_3.setBounds(315, 194, 95, 14);
+		lblNewLabel_3.setBounds(359, 191, 95, 14);
 		panel_2.add(lblNewLabel_3);
 		
 		JLabel lblNewLabel_4 = new JLabel("Quantité total");
 		lblNewLabel_4.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblNewLabel_4.setBounds(555, 194, 104, 14);
+		lblNewLabel_4.setBounds(597, 191, 104, 14);
 		panel_2.add(lblNewLabel_4);
 		
 		JButton refresh = new JButton("rafraîchir le tableau");
@@ -463,8 +466,9 @@ public class Menu extends JFrame {
 				
 			}
 		});
-		refresh.setBounds(749, 310, 146, 33);
+		refresh.setBounds(936, 307, 146, 33);
 		panel_2.add(refresh);
+		
 		
 		JLabel lblNewLabel_7 = new JLabel("Quantité total des livres");
 		lblNewLabel_7.setFont(new Font("Tahoma", Font.BOLD, 13));
@@ -505,12 +509,23 @@ public class Menu extends JFrame {
 		btnNewButton.setBounds(27, 185, 207, 49);
 		panel_1.add(btnNewButton);
 		
+		
+		
 		if(userRole.equals("Emprunteur")) {
 			btnNewButton.setVisible(false);
 		}else {
 			btnNewButton.setVisible(true);
 		}
 		
+		JButton btnNewButton_4 = new JButton("Retourner un livre");
+		btnNewButton_4.setBackground(new Color(255, 215, 0));
+		btnNewButton_4.setFont(new Font("Tahoma", Font.BOLD, 13));
+		btnNewButton_4.setBounds(27, 496, 207, 49);
+		panel_1.add(btnNewButton_4);
+		if(userRole.equals("Emprunteur")) {
+			btnNewButton_4.setVisible(true);
+		}else {
+			btnNewButton_4.setVisible(false);
+		}
     }
-	
 }
