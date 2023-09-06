@@ -132,14 +132,13 @@ public class Login extends JFrame {
 						rs = ps.executeQuery();
 						if(rs.next()) {
 							dispose();
-							
 							String role ="";
 							if(Integer.parseInt(rs.getString("role")) == 2) {
 								role ="Emprunteur";
 							}else {
 								role ="Bibliothécaire";
 							}
-								Menu menu = new Menu(role);
+								Menu menu = new Menu(role,rs.getInt("id"));
 								menu.setVisible(true);
 								menu.setLocationRelativeTo(null);
 								menu.getAuthname().setText("Bienvenu "+rs.getString("name"));
