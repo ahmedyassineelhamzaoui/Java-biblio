@@ -177,23 +177,35 @@ public class Menu extends JFrame {
 		
 
 		
-		JLabel total_statistique = new JLabel("");
+		JLabel total_statistique = new JLabel("0");
 		total_statistique.setHorizontalAlignment(SwingConstants.CENTER);
 		total_statistique.setFont(new Font("Tahoma", Font.BOLD, 14));
 		total_statistique.setBounds(89, 118, 46, 14);
 		panel_2.add(total_statistique);
 		
-		JLabel total_disponible = new JLabel("");
+		JLabel total_disponible = new JLabel("0");
 		total_disponible.setHorizontalAlignment(SwingConstants.CENTER);
 		total_disponible.setFont(new Font("Tahoma", Font.BOLD, 14));
-		total_disponible.setBounds(317, 118, 46, 14);
+		total_disponible.setBounds(277, 118, 46, 14);
 		panel_2.add(total_disponible);
 		
-		JLabel total_perdu = new JLabel("");
+		JLabel total_perdu = new JLabel("0");
 		total_perdu.setFont(new Font("Tahoma", Font.BOLD, 14));
 		total_perdu.setHorizontalAlignment(SwingConstants.CENTER);
-		total_perdu.setBounds(554, 118, 46, 14);
+		total_perdu.setBounds(484, 118, 46, 14);
 		panel_2.add(total_perdu);
+		
+		JLabel total_rtard = new JLabel("0");
+		total_rtard.setFont(new Font("Tahoma", Font.BOLD, 14));
+		total_rtard.setHorizontalAlignment(SwingConstants.CENTER);
+		total_rtard.setBounds(700, 118, 46, 14);
+		panel_2.add(total_rtard);
+		
+		JLabel total_emprunté = new JLabel("0");
+		total_emprunté.setFont(new Font("Tahoma", Font.BOLD, 14));
+		total_emprunté.setHorizontalAlignment(SwingConstants.CENTER);
+		total_emprunté.setBounds(930, 118, 46, 14);
+		panel_2.add(total_emprunté);
 		
 		isbnField = new JTextField();
 		isbnField.setBackground(new Color(255, 255, 224));
@@ -235,6 +247,36 @@ public class Menu extends JFrame {
 				total_statistique.setText(resul.getString(1));
 				total_disponible.setText(resul.getString(2));
 				total_perdu.setText(resul.getString(3));
+			}
+		}catch(Exception e) {
+			e.getMessage();
+		}
+		
+		PreparedStatement prepared;
+		ResultSet results;
+		
+		String queryRetard = "SELECT count(*) FROM emprunts where statut = 'en retard' ";
+
+		try {
+			prepared = ConnexionDB.getConnection().prepareStatement(queryRetard);
+			results = prepared.executeQuery();
+			if(results.next()) {
+				total_rtard.setText(results.getString(1));
+			}
+		}catch(Exception e) {
+			e.getMessage();
+		}
+		
+		PreparedStatement prepareds;
+		ResultSet resultss;
+		
+		String queryemprunt = "SELECT count(*) FROM emprunts where statut = 'emprunté' ";
+
+		try {
+			prepareds = ConnexionDB.getConnection().prepareStatement(queryemprunt);
+			resultss = prepareds.executeQuery();
+			if(resultss.next()) {
+				total_emprunté.setText(resultss.getString(1));
 			}
 		}catch(Exception e) {
 			e.getMessage();
@@ -515,13 +557,23 @@ public class Menu extends JFrame {
 		
 		JLabel lblNewLabel_8 = new JLabel("Quantité des livres disponibles");
 		lblNewLabel_8.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblNewLabel_8.setBounds(235, 83, 209, 14);
+		lblNewLabel_8.setBounds(210, 83, 209, 14);
 		panel_2.add(lblNewLabel_8);
 		
 		JLabel lblNewLabel_9 = new JLabel("Quantité des livres perdus");
 		lblNewLabel_9.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblNewLabel_9.setBounds(489, 83, 209, 14);
+		lblNewLabel_9.setBounds(429, 83, 209, 14);
 		panel_2.add(lblNewLabel_9);
+		
+		JLabel lblNewLabel_12 = new JLabel("Quantité des livres en retard");
+		lblNewLabel_12.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblNewLabel_12.setBounds(623, 83, 209, 14);
+		panel_2.add(lblNewLabel_12);
+		
+		JLabel lblNewLabel_13 = new JLabel("Quantité des livres empruntés");
+		lblNewLabel_13.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblNewLabel_13.setBounds(833, 83, 209, 14);
+		panel_2.add(lblNewLabel_13);
 		
 		JLabel lblNewLabel_10 = new JLabel("La liste de tous les livres");
 		lblNewLabel_10.setFont(new Font("Tahoma", Font.BOLD, 13));

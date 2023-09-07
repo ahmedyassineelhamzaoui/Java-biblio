@@ -255,29 +255,43 @@ public class Livre {
 	      }
 	}
 	public void chercherLivre(ArrayList<Livre> li,DefaultTableModel mod,String nom) {
-		boolean trouvé = false;
-		for(Livre livre:li) {
-			if(nom.equals(livre.titre) || nom.equals(nom_auteur)) {
-				livreschercher.add(livre);
-				trouvé = true;
-			}
+		PreparedStatement ps;
+		ResultSet rs;
+		String searchQuery = "SELECT * FROM livres l WHERE l.nom_auteur LIKE ? OR l.titre LIKE ?";
+		try {
+		    ps = ConnexionDB.getConnection().prepareStatement(searchQuery);
+		    ps.setString(1, '%' + nom + '%');
+		    ps.setString(2, '%' + nom + '%');
+		    rs = ps.executeQuery();
+		    while (rs.next()) {
+		        Livre l = new Livre(rs.getString("ISBN"), rs.getString("nom_auteur"), rs.getString("titre"), rs.getInt("q_total"), rs.getInt("q_disponible"), rs.getInt("q_perdu"));
+		        livreschercher.add(l);
+		    }
+		    while (mod.getRowCount() > 0) {
+		        mod.removeRow(0);
+		    }
+		    if (livreschercher.size() > 0) {
+		        System.out.println("kldk");
+		        for (Livre livreTrouve : livreschercher) {
+		            Object[] data = {
+		                    livreTrouve.getISBN(),
+		                    livreTrouve.getAuteur(),
+		                    livreTrouve.getTitre(),
+		                    livreTrouve.getQtotal(),
+		                    livreTrouve.getQdisponible(),
+		                    livreTrouve.getQperdus(),
+		            };
+		            mod.addRow(data);
+		        }
+		    } else {
+		        JOptionPane.showMessageDialog(null, "Aucun livre n'a été détecté avec le nom entré", "Aucun livre", JOptionPane.ERROR_MESSAGE);
+		    }
+
+		} catch (Exception e) {
+		    e.printStackTrace();
+		    JOptionPane.showMessageDialog(null, "Une erreur dans la requête", "Erreur", JOptionPane.ERROR_MESSAGE);
 		}
-		if(trouvé) {
-			while(mod.getRowCount() > 0) {
-			    mod.removeRow(0); 
-			  }
-			 for(Livre livreTrouve : livreschercher) {
-				    Object[] data = {
-				      livreTrouve.getISBN(), 
-				      livreTrouve.getAuteur(),
-				      livreTrouve.getTitre(),
-				      livreTrouve.getQtotal(),
-				      livreTrouve.getQdisponible(),
-				      livreTrouve.getQperdus(),
-				    };
-			    mod.addRow(data);
-			}
-		}
+
 	}
 	public void listerLivreEmprunter() {
 		
