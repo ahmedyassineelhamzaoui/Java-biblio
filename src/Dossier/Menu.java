@@ -541,6 +541,7 @@ public class Menu extends JFrame {
 		refresh.setBackground(new Color(255, 215, 0));
 		refresh.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				mod = (DefaultTableModel) tableLivre.getModel();
 				Livre l = new Livre();
 				l.raifrichirTableau(livres,mod);
 				

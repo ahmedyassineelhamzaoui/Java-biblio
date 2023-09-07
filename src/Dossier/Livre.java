@@ -211,9 +211,8 @@ public class Livre {
 		   	            	if(resultSearch.next()) {
 		   	            		JOptionPane.showMessageDialog(null, "Merci de retourner la quantité de livre emprunté à temps pour le bénéfice d'un autre.");
 		   	            	}else {
-		   	            	 try {
 		   	   	              PreparedStatement ps;
-		   	   	              String Query ="INSERT INTO emprunts(ISBN_livre,date_emprunt,date_retoure,statut,id_emprunteur) VALUES(?,?,?,?,?)";
+		   	   	              String Query ="INSERT INTO emprunts(ISBN_livre,date_emprunt,date_retoure,statut,id_emprunteur,quantité_emprunté) VALUES(?,?,?,?,?,?)";
 		   	   	              try {
 		   	   	            	  ps = ConnexionDB.getConnection().prepareStatement(Query);
 		   	   	            	  ps.setString(1, (String) mod.getValueAt(ligneSelectionnee, 0));
@@ -227,6 +226,7 @@ public class Livre {
 		   		   	            	ps.setTimestamp(3, returnTimestamp);
 		   	   	            	    ps.setString(4, "emprunté");
 		   	   	            	    ps.setInt(5, user_id);
+		   	   	            	    ps.setInt(6, qty);
 		   		   	            	if(ps.executeUpdate() != 0) {
 		   				   	   				 for(int i=0;i<originListe.size();i++) {
 		   				   	   					 if(originListe.get(i).ISBN.equals(newLivresList.get(ligneSelectionnee).getISBN())){
@@ -253,11 +253,7 @@ public class Livre {
 		   	   	              }catch(Exception ex) {
 		   	   	            	  JOptionPane.showMessageDialog(null,"impossible d'emprunté ce livre pour le moment","erreur d'emprunt",JOptionPane.ERROR_MESSAGE);
 		   	   	              }
-		   	   	              
-		   	   	          } catch(NumberFormatException ex) {
-		   	   	              JOptionPane.showMessageDialog(null,  "Veuillez entrer un nombre","invalide quanité ",JOptionPane.ERROR_MESSAGE); 
-		   	   	          }
-		   	            	}
+		   	            }
 		   	             }catch(Exception e) {
 		   	            	 JOptionPane.showMessageDialog(null, "erreur dans votre requéte","erreur",JOptionPane.ERROR_MESSAGE);
 		   	             }}else {
