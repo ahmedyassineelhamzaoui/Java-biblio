@@ -200,53 +200,67 @@ public class Livre {
 	        	}
  	            int qty = Integer.parseInt(quantity);
 	        	if(quantité_disponible> qty) {
-	        		 try {
-	   	              PreparedStatement ps;
-	   	              String Query ="INSERT INTO emprunts(ISBN_livre,date_emprunt,date_retoure,statut,id_emprunteur) VALUES(?,?,?,?,?)";
-	   	              try {
-	   	            	  ps = ConnexionDB.getConnection().prepareStatement(Query);
-	   	            	  ps.setString(1, (String) mod.getValueAt(ligneSelectionnee, 0));
-		   	            	java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(System.currentTimeMillis());
-		   	            	ps.setTimestamp(2, currentTimestamp);
-		
-		   	            	java.util.Calendar calendar = java.util.Calendar.getInstance();
-		   	            	calendar.setTime(currentTimestamp);
-		   	            	calendar.add(java.util.Calendar.DAY_OF_MONTH, 2);
-		   	            	java.sql.Timestamp returnTimestamp = new java.sql.Timestamp(calendar.getTimeInMillis());
-		   	            	ps.setTimestamp(3, returnTimestamp);
-	   	            	    ps.setString(4, "emprunté");
-	   	            	    ps.setInt(5, user_id);
-		   	            	if(ps.executeUpdate() != 0) {
-				   	   				 for(int i=0;i<originListe.size();i++) {
-				   	   					 if(originListe.get(i).ISBN.equals(newLivresList.get(ligneSelectionnee).getISBN())){
-				   	   						 originListe.get(i).setQdisponible(quantité_disponible - qty);
-			   	   						      break;
-				   	   					 }
-				   	   				 }
-			   	   				
-			   	   			     newLivresList.get(ligneSelectionnee).setQdisponible(quantité_disponible - qty );
-			   	   				 mod.setValueAt(quantité_disponible - qty, ligneSelectionnee, 4);
-			   	   				 
-				   	             JOptionPane.showMessageDialog(null, "Le livre a été bien emprunté");
-				   	             PreparedStatement pst;
-				   	             String queryUpdate = "UPDATE livres SET q_disponible = ? WHERE ISBN =? ";
-				   	             try {
-				   	            	 pst = ConnexionDB.getConnection().prepareStatement(queryUpdate);
-					   	             pst.setInt(1,quantité_disponible - qty);
-					   	             pst.setString(2, (String) mod.getValueAt(ligneSelectionnee, 0));
-					   	             pst.execute();
-				   	             }catch(Exception e) {
-				   	            	  JOptionPane.showMessageDialog(null,"impossible de metre a jour","erreur de modification",JOptionPane.ERROR_MESSAGE);
-				   	             }
-	   	            	   }
-	   	              }catch(Exception ex) {
-	   	            	  JOptionPane.showMessageDialog(null,"impossible d'emprunté ce livre pour le moment","erreur d'emprunt",JOptionPane.ERROR_MESSAGE);
-	   	              }
-	   	              
-	   	          } catch(NumberFormatException ex) {
-	   	              JOptionPane.showMessageDialog(null,  "Veuillez entrer un nombre","invalide quanité ",JOptionPane.ERROR_MESSAGE); 
-	   	          }
-	        	}else {
+	        		  PreparedStatement pserach;
+	        		  ResultSet resultSearch;
+	   	              String searchsameISBN ="SELECT * FROM emprunts where ISBN_livre= ? AND id_emprunteur = ?";
+		   	             try {
+		   	            	pserach = ConnexionDB.getConnection().prepareStatement(searchsameISBN);
+		   	            	pserach.setString(1, (String) mod.getValueAt(ligneSelectionnee, 0));
+		   	            	pserach.setInt(2, user_id);
+		   	            	resultSearch = pserach.executeQuery();
+		   	            	if(resultSearch.next()) {
+		   	            		JOptionPane.showMessageDialog(null, "Merci de retourner la quantité de livre emprunté à temps pour le bénéfice d'un autre.");
+		   	            	}else {
+		   	            	 try {
+		   	   	              PreparedStatement ps;
+		   	   	              String Query ="INSERT INTO emprunts(ISBN_livre,date_emprunt,date_retoure,statut,id_emprunteur) VALUES(?,?,?,?,?)";
+		   	   	              try {
+		   	   	            	  ps = ConnexionDB.getConnection().prepareStatement(Query);
+		   	   	            	  ps.setString(1, (String) mod.getValueAt(ligneSelectionnee, 0));
+		   		   	            	java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(System.currentTimeMillis());
+		   		   	            	ps.setTimestamp(2, currentTimestamp);
+		   		
+		   		   	            	java.util.Calendar calendar = java.util.Calendar.getInstance();
+		   		   	            	calendar.setTime(currentTimestamp);
+		   		   	            	calendar.add(java.util.Calendar.DAY_OF_MONTH, 2);
+		   		   	            	java.sql.Timestamp returnTimestamp = new java.sql.Timestamp(calendar.getTimeInMillis());
+		   		   	            	ps.setTimestamp(3, returnTimestamp);
+		   	   	            	    ps.setString(4, "emprunté");
+		   	   	            	    ps.setInt(5, user_id);
+		   		   	            	if(ps.executeUpdate() != 0) {
+		   				   	   				 for(int i=0;i<originListe.size();i++) {
+		   				   	   					 if(originListe.get(i).ISBN.equals(newLivresList.get(ligneSelectionnee).getISBN())){
+		   				   	   						 originListe.get(i).setQdisponible(quantité_disponible - qty);
+		   			   	   						      break;
+		   				   	   					 }
+		   				   	   				 }
+		   			   	   				
+		   			   	   			     newLivresList.get(ligneSelectionnee).setQdisponible(quantité_disponible - qty );
+		   			   	   				 mod.setValueAt(quantité_disponible - qty, ligneSelectionnee, 4);
+		   			   	   				 
+		   				   	             JOptionPane.showMessageDialog(null, "Le livre a été bien emprunté");
+		   				   	             PreparedStatement pst;
+		   				   	             String queryUpdate = "UPDATE livres SET q_disponible = ? WHERE ISBN =? ";
+		   				   	             try {
+		   				   	            	 pst = ConnexionDB.getConnection().prepareStatement(queryUpdate);
+		   					   	             pst.setInt(1,quantité_disponible - qty);
+		   					   	             pst.setString(2, (String) mod.getValueAt(ligneSelectionnee, 0));
+		   					   	             pst.execute();
+		   				   	             }catch(Exception e) {
+		   				   	            	  JOptionPane.showMessageDialog(null,"impossible de metre a jour","erreur de modification",JOptionPane.ERROR_MESSAGE);
+		   				   	             }
+		   	   	            	   }
+		   	   	              }catch(Exception ex) {
+		   	   	            	  JOptionPane.showMessageDialog(null,"impossible d'emprunté ce livre pour le moment","erreur d'emprunt",JOptionPane.ERROR_MESSAGE);
+		   	   	              }
+		   	   	              
+		   	   	          } catch(NumberFormatException ex) {
+		   	   	              JOptionPane.showMessageDialog(null,  "Veuillez entrer un nombre","invalide quanité ",JOptionPane.ERROR_MESSAGE); 
+		   	   	          }
+		   	            	}
+		   	             }catch(Exception e) {
+		   	            	 JOptionPane.showMessageDialog(null, "erreur dans votre requéte","erreur",JOptionPane.ERROR_MESSAGE);
+		   	             }}else {
 	        		JOptionPane.showMessageDialog(null, "la quanté que vous avez entrer n'est plus disponible","impossible d'emprunté ",JOptionPane.ERROR_MESSAGE);
 	        	}
 	        }catch(Exception ex) {
