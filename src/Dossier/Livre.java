@@ -310,7 +310,38 @@ public class Livre {
 	public void listerLivreEmprunter() {
 		
 	}
-	public void afficherLivreDisponible() {
+	public void afficherLivreDisponible(DefaultTableModel mod) {
+		ArrayList<Livre> livres = new ArrayList<>();
+		PreparedStatement ps;
+		ResultSet rs;
+		String query ="SELECT * FROM livres l where l.q_disponible > 0 ";
+		try {
+			ps = ConnexionDB.getConnection().prepareStatement(query);
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				Livre l = new Livre(rs.getString(2),rs.getString(3),rs.getString(4),rs.getInt(5),rs.getInt(6),rs.getInt(7));
+				livres.add(l);
+			}
+		}catch(Exception e) {
+			JOptionPane.showMessageDialog(null, "erreur dans la requéte","erreur",JOptionPane.ERROR_MESSAGE);
+		}
+		while(mod.getRowCount() > 0) {
+		    mod.removeRow(0); 
+		}
+		
+		 for(Livre livre : livres) {
+			    Object[] data = {
+			      livre.getISBN(), 
+			      livre.getAuteur(),
+			      livre.getTitre(),
+			      livre.getQtotal(),
+			      livre.getQdisponible(),
+			      livre.getQperdus(),
+			    };
+		    mod.addRow(data);
+		}
+	}
+	public void retournerLLivre() {
 		
 	}
 	public void livreStatistiques() {
