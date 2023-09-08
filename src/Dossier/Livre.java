@@ -187,9 +187,7 @@ public class Livre {
 				 prs.setInt(5, quantdispo);
 				 prs.setInt(6, quantperdu);
 				 prs.setString(7,ls.get(ligneSelectionnee).getISBN());
-				 if(quant < originListe.get(ligneSelectionnee ).Q_total ){
-					 JOptionPane.showMessageDialog(null, "la quantité total que tu as entré inferieur a la quantité précedant","message",JOptionPane.ERROR_MESSAGE);
-				 }else
+				 
 				 if(prs.executeUpdate() != 0) {
 					 for(int i=0;i<originListe.size();i++) {
 						 if(originListe.get(i).ISBN.equals(ls.get(ligneSelectionnee).getISBN())){
@@ -226,7 +224,7 @@ public class Livre {
    		
 		 
 	}
-	public void emprunterLivre(ArrayList<Livre> originListe,ArrayList<Livre> newLivresList,DefaultTableModel mod,int ligneSelectionnee,int user_id) {
+	public void emprunterLivre(ArrayList<Livre> originListe,ArrayList<Livre> newLivresList,DefaultTableModel mod,DefaultTableModel mod1,int ligneSelectionnee,int user_id) {
 		String quantity = JOptionPane.showInputDialog(null, "Veuillez entrer la quantité empruntée","Quantité",JOptionPane.QUESTION_MESSAGE);	
 		if(quantity != null) {
 	        PreparedStatement p;
@@ -240,7 +238,7 @@ public class Livre {
 	        		quantité_disponible = s.getInt("q_disponible");
 	        	}
  	            int qty = Integer.parseInt(quantity);
-	        	if(quantité_disponible> qty) {
+	        	if(quantité_disponible>= qty) {
 	        		  PreparedStatement pserach;
 	        		  ResultSet resultSearch;
 	   	              String searchsameISBN ="SELECT * FROM emprunts where ISBN_livre= ? AND id_emprunteur = ?";
@@ -280,7 +278,23 @@ public class Livre {
 		   			   	   				 mod.setValueAt(quantité_disponible - qty, ligneSelectionnee, 4);
 		   			   	   				 
 		   				   	             JOptionPane.showMessageDialog(null, "Le livre a été bien emprunté");
-		   				   	             PreparedStatement pst;
+		   								 PreparedStatement pre;
+		   								 ResultSet result;
+		   								 String querySR ="SELECT * FROM emprunts e JOIN livres l on e.ISBN_livre = l.ISBN JOIN users u on e.id_emprunteur = u.id WHERE e.ISBN_livre = ? AND e.id_emprunteur = ? ";
+		   								 try{
+		   									pre = ConnexionDB.getConnection().prepareStatement(querySR);
+		   									pre.setString(1,(String) mod.getValueAt(ligneSelectionnee, 0));
+		   									pre.setInt(1,user_id);
+		   									result = pre.executeQuery();
+		   									if(result.next()) {
+				   				   	             mod1.addRow(new Object[] {result.getString("ISBN"),result.getString("nom_auteur"),result.getString("titre"),result.getInt("quantité_emmprunté"),result.getTimestamp("date_emprunt"),result.getTimestamp("date_retoure"),result.getString("name"),result.getString("phone"),result.getString("statut")});
+
+		   									}
+		   								 }catch(Exception e) {
+		   									 JOptionPane.showMessageDialog(null, "erreur dans l'affichage","erreur",JOptionPane.ERROR_MESSAGE);
+		   								 }
+		   				   	             
+		   								 PreparedStatement pst;
 		   				   	             String queryUpdate = "UPDATE livres SET q_disponible = ? WHERE ISBN =? ";
 		   				   	             try {
 		   				   	            	 pst = ConnexionDB.getConnection().prepareStatement(queryUpdate);

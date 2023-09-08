@@ -43,6 +43,7 @@ public class Menu extends JFrame {
     
     ArrayList<Livre> livres = new ArrayList<>();
     DefaultTableModel mod; // on ajoute ce model pour remplire notre tableau
+    DefaultTableModel mod1;
     private JTextField quantity_dispo;
     private JTextField qauntity_perdu;
     
@@ -378,8 +379,9 @@ public class Menu extends JFrame {
 		                	  int quantitedispo = (int)mod.getValueAt(i, 4);
 		                	  int quantiteperdu = (int)mod.getValueAt(i, 5);
 		                	  newLivresList.add(new Livre(isbn, auteur, titre, quantite,quantitedispo,quantiteperdu)); 
-				            l.modifierLivre(livres,newLivresList,mod,ligne,isbnField.getText().trim(),select_auteur.getSelectedItem().toString(),titreField.getText().trim(),Integer.parseInt(quantityField.getText()),Integer.parseInt(quantity_dispo.getText()),Integer.parseInt(qauntity_perdu.getText()));
 		                }
+			            l.modifierLivre(livres,newLivresList,mod,ligne,isbnField.getText().trim(),select_auteur.getSelectedItem().toString(),titreField.getText().trim(),Integer.parseInt(quantityField.getText()),Integer.parseInt(quantity_dispo.getText()),Integer.parseInt(qauntity_perdu.getText()));
+
 					}
 	            }else {
 	                	JOptionPane.showMessageDialog(null, "selectioner une ligne pour le modifier","erreur de selection",JOptionPane.ERROR_MESSAGE);
@@ -431,10 +433,14 @@ public class Menu extends JFrame {
 		}else {
 			btnNewButton_2.setVisible(true);
 		}
+		 JTable tableEmprunts = new JTable();
+
 		JButton btnNewButton_3 = new JButton("Emprunter le livre");
 		btnNewButton_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				mod = (DefaultTableModel) tableLivre.getModel();
+				mod1 = (DefaultTableModel) tableEmprunts.getModel();
+
 				int ligne = tableLivre.getSelectedRow();
 				
 				 if(ligne != -1) {
@@ -449,7 +455,7 @@ public class Menu extends JFrame {
 			                	  int quantiteperdu = (int)mod.getValueAt(i, 5);
 			                	  newLivresList.add(new Livre(isbn, auteur, titre, quantite,quantitedispo,quantiteperdu));
 			                }
-	                		l.emprunterLivre(livres,newLivresList,mod,ligne,user_id);
+	                		l.emprunterLivre(livres,newLivresList,mod,mod1,ligne,user_id);
 	                }else {
 	                	JOptionPane.showMessageDialog(null, "selectioner un livre pour l'emprunté","erreur de selection",JOptionPane.ERROR_MESSAGE);
 	                }	
@@ -584,12 +590,7 @@ public class Menu extends JFrame {
 		lblNewLabel_11.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblNewLabel_11.setBounds(12, 521, 216, 14);
 		panel_2.add(lblNewLabel_11);
-		if(userRole.equals("Emprunteur")) {
-			lblNewLabel_11.setVisible(false);
-		}else {
-			lblNewLabel_11.setVisible(true);
-		}
-		 JTable tableEmprunts = new JTable();
+	
 			
 			
            tableEmprunts.setFont(new Font("Tahoma", Font.BOLD, 12));
@@ -639,23 +640,30 @@ public class Menu extends JFrame {
 
 			PreparedStatement pstemprunt ;
 			ResultSet rstemprunt;
-			String querySelectEmprunt ="SELECT l.ISBN,l.nom_auteur,l.titre,(l.q_total - l.q_disponible - l.q_perdu) as quantité_emmprunté,e.date_emprunt,e.date_retoure,u.name,u.phone,e.statut  FROM livres l JOIN emprunts e on l.ISBN = e.ISBN_livre JOIN users u ON u.id = e.id_emprunteur ";
+			String querySelectEmpruntadmin ="SELECT l.ISBN,l.nom_auteur,l.titre,(l.q_total - l.q_disponible - l.q_perdu) as quantité_emmprunté,e.date_emprunt,e.date_retoure,u.name,u.phone,e.statut  FROM livres l JOIN emprunts e on l.ISBN = e.ISBN_livre JOIN users u ON u.id = e.id_emprunteur ";
+			String querySelectEmpruntUser ="SELECT l.ISBN,l.nom_auteur,l.titre,(l.q_total - l.q_disponible - l.q_perdu) as quantité_emmprunté,e.date_emprunt,e.date_retoure,u.name,u.phone,e.statut  FROM livres l JOIN emprunts e on l.ISBN = e.ISBN_livre JOIN users u ON u.id = e.id_emprunteur where u.id = ?";
+
 			try {
 				mod = (DefaultTableModel) tableEmprunts.getModel();
-				pstemprunt =  ConnexionDB.getConnection().prepareStatement(querySelectEmprunt);
-				rstemprunt = pstemprunt.executeQuery();
-				while(rstemprunt.next()) {
-					mod.addRow(new Object[] {rstemprunt.getString("ISBN"),rstemprunt.getString("nom_auteur"),rstemprunt.getString("titre"),rstemprunt.getInt("quantité_emmprunté"),rstemprunt.getTimestamp("date_emprunt"),rstemprunt.getTimestamp("date_retoure"),rstemprunt.getString("name"),rstemprunt.getString("phone"),rstemprunt.getString("statut")});
+
+				if(userRole.equals("Emprunteur")) {
+					pstemprunt =  ConnexionDB.getConnection().prepareStatement(querySelectEmpruntUser);
+					pstemprunt.setInt(1, user_id);
+					rstemprunt = pstemprunt.executeQuery();
+					while(rstemprunt.next()) {
+						mod.addRow(new Object[] {rstemprunt.getString("ISBN"),rstemprunt.getString("nom_auteur"),rstemprunt.getString("titre"),rstemprunt.getInt("quantité_emmprunté"),rstemprunt.getTimestamp("date_emprunt"),rstemprunt.getTimestamp("date_retoure"),rstemprunt.getString("name"),rstemprunt.getString("phone"),rstemprunt.getString("statut")});
+					}
+				}else {
+					pstemprunt =  ConnexionDB.getConnection().prepareStatement(querySelectEmpruntadmin);
+					rstemprunt = pstemprunt.executeQuery();
+					while(rstemprunt.next()) {
+						mod.addRow(new Object[] {rstemprunt.getString("ISBN"),rstemprunt.getString("nom_auteur"),rstemprunt.getString("titre"),rstemprunt.getInt("quantité_emmprunté"),rstemprunt.getTimestamp("date_emprunt"),rstemprunt.getTimestamp("date_retoure"),rstemprunt.getString("name"),rstemprunt.getString("phone"),rstemprunt.getString("statut")});
+					}
 				}
 			}catch(Exception ex) {
 				JOptionPane.showMessageDialog(null, "imposible d'afficher la liste d'emprunts","erreur d'affichage",JOptionPane.ERROR_MESSAGE);
 			}
-			if(userRole.equals("Emprunteur")) {
-				scrollPane_1.setVisible(false);
-			}else {
-				scrollPane_1.setVisible(true);
-			}
-		
+			
 
 		
 		
@@ -759,10 +767,11 @@ public class Menu extends JFrame {
 	                    	 rst = pst.executeQuery();
 	                    	 if(rst.next()) {
 	                    		 PreparedStatement pstd;
-	    	                     String deleteQuery ="DELETE FROM emprunts WHERE ISBN_livre = ?";
+	    	                     String deleteQuery ="DELETE FROM emprunts WHERE ISBN_livre = ? AND id_emprunteur =?";
 	    	                     try {
 	    	                    	 pstd = ConnexionDB.getConnection().prepareStatement(deleteQuery);
 	    	                    	 pstd.setString(1, ISBNentered);
+	    	                    	 pstd.setInt(1, user_id);
 	    	                    	 pstd.execute();
 	    	                    	 int ligne = tableLivre.getSelectedRow();
 	    	                    	 mod.setValueAt(livres.get(ligne).getQdisponible() + rst.getInt(7), ligne, 4);
