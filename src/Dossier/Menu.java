@@ -84,10 +84,10 @@ public class Menu extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Menu frame = new Menu();
-					frame.setVisible(true);
-					frame.setResizable(false);
-					frame.setLocationRelativeTo(null);	
+					Login l =new Login();
+					l.setVisible(true);
+					l.setLocationRelativeTo(null);
+					l.setResizable(false);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -99,13 +99,12 @@ public class Menu extends JFrame {
 	 * Create the frame.
 	 */
 	public Menu() {
-
     }
 		
     public Menu(String role,int user_id) {
     	
 		this.userRole = role;
-    	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1370, 750);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -365,11 +364,11 @@ public class Menu extends JFrame {
 				mod = (DefaultTableModel) tableLivre.getModel();
 			    int ligne = tableLivre.getSelectedRow();
 				if(ligne != -1) {
-					if(isbnField.getText().equals("") || titreField.getText().equals("") || quantityField.getText().equals("") || quantity_dispo.getText().equals("") || qauntity_perdu.getText().equals("") ) {
+					if(isbnField.getText().trim().equals("") || titreField.getText().trim().equals("") || quantityField.getText().trim().equals("") || quantity_dispo.getText().trim().equals("") || qauntity_perdu.getText().trim().equals("") ) {
 	                	JOptionPane.showMessageDialog(null, "merci de remplire tous les champs avant de modifier","erreur de modification",JOptionPane.ERROR_MESSAGE);
 					}else {
 						ArrayList<Livre> newLivresList = new ArrayList<>();
-						Livre l = new Livre(isbnField.getText(),select_auteur.getSelectedItem().toString(),titreField.getText(),Integer.parseInt(quantityField.getText()),Integer.parseInt(quantity_dispo.getText()),Integer.parseInt(qauntity_perdu.getText()));
+						Livre l = new Livre(isbnField.getText().trim(),select_auteur.getSelectedItem().toString(),titreField.getText().trim(),Integer.parseInt(quantityField.getText()),Integer.parseInt(quantity_dispo.getText()),Integer.parseInt(qauntity_perdu.getText()));
 		                mod = (DefaultTableModel) tableLivre.getModel();
 		                for(int i=0; i<mod.getRowCount(); i++) {
 		                	  String isbn = (String)mod.getValueAt(i, 0);
@@ -378,9 +377,9 @@ public class Menu extends JFrame {
 		                	  int quantite = (int)mod.getValueAt(i, 3);
 		                	  int quantitedispo = (int)mod.getValueAt(i, 4);
 		                	  int quantiteperdu = (int)mod.getValueAt(i, 5);
-		                	  newLivresList.add(new Livre(isbn, auteur, titre, quantite,quantitedispo,quantiteperdu));
+		                	  newLivresList.add(new Livre(isbn, auteur, titre, quantite,quantitedispo,quantiteperdu)); 
+				            l.modifierLivre(livres,newLivresList,mod,ligne,isbnField.getText().trim(),select_auteur.getSelectedItem().toString(),titreField.getText().trim(),Integer.parseInt(quantityField.getText()),Integer.parseInt(quantity_dispo.getText()),Integer.parseInt(qauntity_perdu.getText()));
 		                }
-		                l.modifierLivre(livres,newLivresList,mod,ligne,isbnField.getText(),select_auteur.getSelectedItem().toString(),titreField.getText(),Integer.parseInt(quantityField.getText()),Integer.parseInt(quantity_dispo.getText()),Integer.parseInt(qauntity_perdu.getText()));
 					}
 	            }else {
 	                	JOptionPane.showMessageDialog(null, "selectioner une ligne pour le modifier","erreur de selection",JOptionPane.ERROR_MESSAGE);
@@ -613,6 +612,20 @@ public class Menu extends JFrame {
 			btnNewButton_5.setBackground(new Color(255, 215, 0));
 			btnNewButton_5.setBounds(748, 307, 178, 33);
 			panel_2.add(btnNewButton_5);
+			
+			JButton btnNewButton_6 = new JButton("Déconexion");
+			btnNewButton_6.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					dispose();
+					Login l = new Login();
+					l.setVisible(true);
+					l.setResizable(false);
+					l.setLocationRelativeTo(null);
+				}
+			});
+			btnNewButton_6.setBackground(new Color(255, 215, 0));
+			btnNewButton_6.setBounds(968, 22, 114, 33);
+			panel_2.add(btnNewButton_6);
 			btnNewButton_5.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					mod = (DefaultTableModel) tableLivre.getModel();
@@ -653,10 +666,10 @@ public class Menu extends JFrame {
 		JButton btnNewButton = new JButton("Ajouter le livre");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(isbnField.getText().equals("") || titreField.getText().equals("") || quantityField.getText().equals("") || quantity_dispo.getText().equals("") || qauntity_perdu.getText().equals("")) {
+				if(isbnField.getText().trim().equals("") || titreField.getText().trim().equals("") || quantityField.getText().trim().equals("") || quantity_dispo.getText().trim().equals("") || qauntity_perdu.getText().trim().equals("")) {
 					JOptionPane.showMessageDialog(null, "merci de remplire tous les champs","erreur de validation",JOptionPane.ERROR_MESSAGE);
 				}else {
-					Livre l = new Livre(isbnField.getText(),select_auteur.getSelectedItem().toString(),titreField.getText(),Integer.parseInt(quantityField.getText()),Integer.parseInt(quantity_dispo.getText()),Integer.parseInt(qauntity_perdu.getText()));
+					Livre l = new Livre(isbnField.getText().trim(),select_auteur.getSelectedItem().toString(),titreField.getText().trim(),Integer.parseInt(quantityField.getText()),Integer.parseInt(quantity_dispo.getText()),Integer.parseInt(qauntity_perdu.getText()));
 	                mod = (DefaultTableModel) tableLivre.getModel();
 					l.ajouterLivre(l,mod,livres);
 				}
@@ -712,7 +725,7 @@ public class Menu extends JFrame {
                  }catch(Exception es) {
                 	 JOptionPane.showMessageDialog(null, "un erreur dans la requete","erreur",JOptionPane.ERROR_MESSAGE);
                  }
-                 if(ISBNentered.equals("") || !exist) {
+                 if(ISBNentered == null || !exist) {
                 	 JOptionPane.showMessageDialog(null, "s'il vous plait entrer un ISBN d'un livre déja emprunté","erreur",JOptionPane.ERROR_MESSAGE);
                  }else {
                 	 boolean in = false;
@@ -751,6 +764,8 @@ public class Menu extends JFrame {
 	    	                    	 pstd = ConnexionDB.getConnection().prepareStatement(deleteQuery);
 	    	                    	 pstd.setString(1, ISBNentered);
 	    	                    	 pstd.execute();
+	    	                    	 int ligne = tableLivre.getSelectedRow();
+	    	                    	 mod.setValueAt(livres.get(ligne).getQdisponible() + rst.getInt(7), ligne, 4);
 	    	                    	 JOptionPane.showMessageDialog(null, "Le livre a bien été retourné. Merci!","Retour effectué",JOptionPane.INFORMATION_MESSAGE);
 	    	                     }catch(Exception ed) {
 	    	                    	 JOptionPane.showMessageDialog(null, "errur dans votre requéte delete", "erreur", JOptionPane.ERROR_MESSAGE);

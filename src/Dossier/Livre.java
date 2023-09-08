@@ -86,12 +86,13 @@ public class Livre {
 	    		int quantiteDisponible = l.Q_dispo;
 	    		int quantitePerdue =  l.Q_perdu;
 	    		int quantiteTotale = l.Q_total;
-	    		if(l.Q_total< l.Q_dispo + l.Q_perdu) {
+	    		if(l.Q_total != l.Q_dispo + l.Q_perdu) {
 	    			  String message = "Attention, la somme de la quantité disponible (" 
 	    			             + quantiteDisponible + ") et de la quantité perdue (" 
-	    			             + quantitePerdue + ") ne peut pas dépasser la quantité totale ("+ quantiteTotale + ")";
+	    			             + quantitePerdue + ") sont défferent à la quantité totale ("+ quantiteTotale + ")";
 	    			JOptionPane.showMessageDialog(null, message,"donner des donnees valides",JOptionPane.ERROR_MESSAGE);
-	    		}else {
+	    		}
+	    		else {
 	    			PreparedStatement p;
 		    		String queryInsert = "INSERT INTO users.livres(ISBN,nom_auteur,titre,q_total,q_disponible,q_perdu) VALUES(?,?,?,?,?,?)";
 		    		try {
@@ -121,68 +122,108 @@ public class Livre {
 	
 	public void supprimerLivre(ArrayList<Livre> originListe,ArrayList<Livre> ls,DefaultTableModel mod,int ligneSelectionnee) {
 		 
-		 PreparedStatement prs;
-		 String queryDelete = "DELETE FROM users.livres WHERE ISBN=?";
-		 try {
-			 prs = ConnexionDB.getConnection().prepareStatement(queryDelete);
-			 prs.setString(1, ls.get(ligneSelectionnee).getISBN());
-			 if(prs.executeUpdate() != 0) {
-				 JOptionPane.showMessageDialog(null, "le livre a été bien supprimer","succés",JOptionPane.PLAIN_MESSAGE);
-			 }
-		 }catch(Exception ex) {
-			  JOptionPane.showMessageDialog(null, "impossible de supprimer ce livre","erreur de suppresion",JOptionPane.ERROR_MESSAGE);
-		 }
-		 for(int i=0;i<originListe.size();i++) {
-			 if(originListe.get(i).ISBN.equals(ls.get(ligneSelectionnee).getISBN())){
-				 originListe.remove(i);
-				 break;
-			 }
-		 }
-		 mod.removeRow(ligneSelectionnee);
+		 PreparedStatement ps;
+		 ResultSet rs;
+		 String queryAfiche = "SELECT * FROM emprunts WHERE ISBN_livre=?";
+         try {
+        	 ps = ConnexionDB.getConnection().prepareStatement(queryAfiche);
+        	 ps.setString(1, ls.get(ligneSelectionnee).getISBN());
+        	 rs = ps.executeQuery();
+        	 if(rs.next()) {
+        		 JOptionPane.showMessageDialog(null, "vous ne pouvez pas supprimer ce livre car il est emprunté","erreur de supperssion",JOptionPane.ERROR_MESSAGE);
+        	 }else {
+        		 PreparedStatement prs;
+        		 String queryDelete = "DELETE FROM users.livres WHERE ISBN=?";
+        		 try {
+        			 prs = ConnexionDB.getConnection().prepareStatement(queryDelete);
+        			 prs.setString(1, ls.get(ligneSelectionnee).getISBN());
+        			 if(prs.executeUpdate() != 0) {
+        				 JOptionPane.showMessageDialog(null, "le livre a été bien supprimer","succés",JOptionPane.PLAIN_MESSAGE);
+        			 }
+        		 }catch(Exception ex) {
+        			  JOptionPane.showMessageDialog(null, "impossible de supprimer ce livre","erreur de suppresion",JOptionPane.ERROR_MESSAGE);
+        		 }
+        		 for(int i=0;i<originListe.size();i++) {
+        			 if(originListe.get(i).ISBN.equals(ls.get(ligneSelectionnee).getISBN())){
+        				 originListe.remove(i);
+        				 break;
+        			 }
+        		 }
+        		 mod.removeRow(ligneSelectionnee);
+        	 }
+         }catch(Exception e) {
+        	 JOptionPane.showMessageDialog(null, "erreur dans la requéte","erreur",JOptionPane.ERROR_MESSAGE);
+         }
+		 
+		
 	}
 	public void modifierLivre(ArrayList<Livre> originListe,ArrayList<Livre> ls,DefaultTableModel mod,int ligneSelectionnee,String isbn,String auteur,String titre,int quant,int quantdispo,int quantperdu) {
-		
-   		 PreparedStatement prs;
-		 String queryUpdate = "UPDATE users.livres  SET ISBN=?,nom_auteur=?,titre=?,q_total=?,q_disponible=?,q_perdu=?  WHERE ISBN =?";
-		 try {		 
-			 prs = ConnexionDB.getConnection().prepareStatement(queryUpdate);
-			 prs.setString(1, isbn);
-			 prs.setString(2,auteur );
-			 prs.setString(3,titre );
-			 prs.setInt(4,quant);
-			 prs.setInt(5, quantdispo);
-			 prs.setInt(6, quantperdu);
-			 prs.setString(7,ls.get(ligneSelectionnee).getISBN());
-			 if(prs.executeUpdate() != 0) {
-				 for(int i=0;i<originListe.size();i++) {
-					 if(originListe.get(i).ISBN.equals(ls.get(ligneSelectionnee).getISBN())){
-						 originListe.get(i).setISBN(isbn);
-						 originListe.get(i).setAuteur(auteur);
-						 originListe.get(i).setTitre(titre);
-						 originListe.get(i).setQtotal(quant);
-						 originListe.get(i).setQdisponible(quantdispo);
-						 originListe.get(i).setQperdus(quantperdu);
-						 break;
+		int quantiteemprunt = 0;
+		PreparedStatement p;
+		ResultSet r;
+		String querys = "SELECT e.quantité_emprunté from  emprunts e where ISBN_livre =?";
+		try {
+			p = ConnexionDB.getConnection().prepareStatement(querys);
+			p.setString(1,isbn );
+			r = p.executeQuery();
+			if(r.next()) {
+				quantiteemprunt = r.getInt("quantité_emprunté");
+			}
+		}catch(Exception e) {
+			JOptionPane.showMessageDialog(null, "erreur","erreur",JOptionPane.ERROR_MESSAGE);
+		}
+		if(quant != quantdispo + quantperdu + quantiteemprunt) {
+			JOptionPane.showMessageDialog(null, "impossible de metre a jour ce livre\nla quantité total # quantité disponible + quantité perdu + quantité emprunté","erreur de modificatiin",JOptionPane.ERROR_MESSAGE);
+		}else {
+			
+			 PreparedStatement prs;
+			 String queryUpdate = "UPDATE users.livres  SET ISBN=?,nom_auteur=?,titre=?,q_total=?,q_disponible=?,q_perdu=?  WHERE ISBN =?";
+			 try {		 
+				 prs = ConnexionDB.getConnection().prepareStatement(queryUpdate);
+				 prs.setString(1, isbn.trim());
+				 prs.setString(2,auteur );
+				 prs.setString(3,titre.trim() );
+				 prs.setInt(4, quant);
+				 prs.setInt(5, quantdispo);
+				 prs.setInt(6, quantperdu);
+				 prs.setString(7,ls.get(ligneSelectionnee).getISBN());
+				 if(quant < originListe.get(ligneSelectionnee ).Q_total ){
+					 JOptionPane.showMessageDialog(null, "la quantité total que tu as entré inferieur a la quantité précedant","message",JOptionPane.ERROR_MESSAGE);
+				 }else
+				 if(prs.executeUpdate() != 0) {
+					 for(int i=0;i<originListe.size();i++) {
+						 if(originListe.get(i).ISBN.equals(ls.get(ligneSelectionnee).getISBN())){
+							 originListe.get(i).setISBN(isbn.trim());
+							 originListe.get(i).setAuteur(auteur);
+							 originListe.get(i).setTitre(titre.trim());
+							 originListe.get(i).setQtotal(quant);
+							 originListe.get(i).setQdisponible( quantdispo );
+							 originListe.get(i).setQperdus(quantperdu);
+							 break;
+						 }
 					 }
+					 ls.get(ligneSelectionnee).setISBN(isbn.trim());
+					 ls.get(ligneSelectionnee).setAuteur(auteur);
+					 ls.get(ligneSelectionnee).setTitre(titre.trim());
+					 ls.get(ligneSelectionnee).setQtotal(quant);
+					 ls.get(ligneSelectionnee).setQdisponible(quantdispo);
+					 ls.get(ligneSelectionnee).setQperdus(quantperdu);
+					 mod.setValueAt(isbn.trim(), ligneSelectionnee, 0);
+					 mod.setValueAt(auteur, ligneSelectionnee, 1);
+					 mod.setValueAt(titre.trim(), ligneSelectionnee, 2);
+					 mod.setValueAt(quant, ligneSelectionnee, 3);
+					 mod.setValueAt(quantdispo , ligneSelectionnee, 4);
+					 mod.setValueAt(quantperdu, ligneSelectionnee, 5);
+				 JOptionPane.showMessageDialog(null, "le livre a été bien Modifier","succés",JOptionPane.PLAIN_MESSAGE);
 				 }
-				 ls.get(ligneSelectionnee).setISBN(isbn);
-				 ls.get(ligneSelectionnee).setAuteur(auteur);
-				 ls.get(ligneSelectionnee).setTitre(titre);
-				 ls.get(ligneSelectionnee).setQtotal(quant);
-				 ls.get(ligneSelectionnee).setQdisponible(quantdispo);
-				 ls.get(ligneSelectionnee).setQperdus(quantperdu);
-				 mod.setValueAt(isbn, ligneSelectionnee, 0);
-				 mod.setValueAt(auteur, ligneSelectionnee, 1);
-				 mod.setValueAt(titre, ligneSelectionnee, 2);
-				 mod.setValueAt(quant, ligneSelectionnee, 3);
-				 mod.setValueAt(quantdispo, ligneSelectionnee, 4);
-				 mod.setValueAt(quantperdu, ligneSelectionnee, 5);
-			 JOptionPane.showMessageDialog(null, "le livre a été bien Modifier","succés",JOptionPane.PLAIN_MESSAGE);
+				 
+			 }catch(Exception ex) {
+				  JOptionPane.showMessageDialog(null, "impossible de modifier ce livre\n"
+				  		+ "ISBN ou titre existe déja","erreur de suppresion",JOptionPane.ERROR_MESSAGE);
 			 }
-			 
-		 }catch(Exception ex) {
-			  JOptionPane.showMessageDialog(null, "impossible de modifier ce livre","erreur de suppresion",JOptionPane.ERROR_MESSAGE);
-		 }
+		}
+		
+   		
 		 
 	}
 	public void emprunterLivre(ArrayList<Livre> originListe,ArrayList<Livre> newLivresList,DefaultTableModel mod,int ligneSelectionnee,int user_id) {
