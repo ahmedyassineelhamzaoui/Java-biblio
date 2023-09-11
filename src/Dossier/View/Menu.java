@@ -8,6 +8,8 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import java.awt.Color;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
@@ -178,47 +180,7 @@ public class Menu extends JFrame {
 		panel_2.add(scrollPane);
 		
 
-		// statistiques
-		JLabel total_statistique = new JLabel("0");
-		total_statistique.setHorizontalAlignment(SwingConstants.CENTER);
-		total_statistique.setFont(new Font("Tahoma", Font.BOLD, 14));
-		total_statistique.setBounds(89, 118, 46, 14);
-		panel_2.add(total_statistique);
 		
-		JLabel total_disponible = new JLabel("0");
-		total_disponible.setHorizontalAlignment(SwingConstants.CENTER);
-		total_disponible.setFont(new Font("Tahoma", Font.BOLD, 14));
-		total_disponible.setBounds(277, 118, 46, 14);
-		panel_2.add(total_disponible);
-		
-		JLabel total_perdu = new JLabel("0");
-		total_perdu.setFont(new Font("Tahoma", Font.BOLD, 14));
-		total_perdu.setHorizontalAlignment(SwingConstants.CENTER);
-		total_perdu.setBounds(484, 118, 46, 14);
-		panel_2.add(total_perdu);
-		
-		JLabel total_rtard = new JLabel("0");
-		total_rtard.setFont(new Font("Tahoma", Font.BOLD, 14));
-		total_rtard.setHorizontalAlignment(SwingConstants.CENTER);
-		total_rtard.setBounds(700, 118, 46, 14);
-		panel_2.add(total_rtard);
-		
-		JLabel total_emprunté = new JLabel("0");
-		total_emprunté.setFont(new Font("Tahoma", Font.BOLD, 14));
-		total_emprunté.setHorizontalAlignment(SwingConstants.CENTER);
-		total_emprunté.setBounds(930, 118, 46, 14);
-		panel_2.add(total_emprunté);
-		
-		ArrayList<Integer> statistiques = new ArrayList<>();
-		statistiques = LivreController.AfficherStatistiques();
-		
-		total_statistique.setText(String.valueOf(statistiques.get(0)));
-		total_disponible.setText(String.valueOf(statistiques.get(1)));
-		total_perdu.setText(String.valueOf(statistiques.get(2)));
-		total_emprunté.setText(String.valueOf(statistiques.get(3)));
-		total_rtard.setText(String.valueOf(statistiques.get(4)));
-
-		// fin Statistiques
 		
 		// les champs de l'application 
 		isbnField = new JTextField();
@@ -249,7 +211,7 @@ public class Menu extends JFrame {
 		panel_2.add(qauntity_perdu);
 		qauntity_perdu.setColumns(10);
 		
-		// fin des champ s
+		// fin des champs
 		
 
 		
@@ -438,40 +400,9 @@ public class Menu extends JFrame {
 		panel_2.add(refresh);
 		
 		
-		JLabel lblNewLabel_7 = new JLabel("Quantité total des livres");
-		lblNewLabel_7.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblNewLabel_7.setBounds(28, 83, 180, 14);
-		panel_2.add(lblNewLabel_7);
 		
-		JLabel lblNewLabel_8 = new JLabel("Quantité des livres disponibles");
-		lblNewLabel_8.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblNewLabel_8.setBounds(210, 83, 209, 14);
-		panel_2.add(lblNewLabel_8);
 		
-		JLabel lblNewLabel_9 = new JLabel("Quantité des livres perdus");
-		lblNewLabel_9.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblNewLabel_9.setBounds(429, 83, 209, 14);
-		panel_2.add(lblNewLabel_9);
 		
-		JLabel lblNewLabel_12 = new JLabel("Quantité des livres en retard");
-		lblNewLabel_12.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblNewLabel_12.setBounds(623, 83, 209, 14);
-		panel_2.add(lblNewLabel_12);
-		
-		JLabel lblNewLabel_13 = new JLabel("Quantité des livres empruntés");
-		lblNewLabel_13.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblNewLabel_13.setBounds(833, 83, 209, 14);
-		panel_2.add(lblNewLabel_13);
-		
-		JLabel lblNewLabel_10 = new JLabel("La liste de tous les livres");
-		lblNewLabel_10.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblNewLabel_10.setBounds(11, 319, 180, 14);
-		panel_2.add(lblNewLabel_10);
-		
-		JLabel lblNewLabel_11 = new JLabel("La liste des livres empruntés");
-		lblNewLabel_11.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblNewLabel_11.setBounds(12, 521, 216, 14);
-		panel_2.add(lblNewLabel_11);
 	
 			
 			
@@ -555,12 +486,96 @@ public class Menu extends JFrame {
 			btnNewButton_2.setVisible(false);
 			btnNewButton_4.setVisible(true);
 		}else {
+			JLabel lblNewLabel_7 = new JLabel("Quantité total des livres");
+			lblNewLabel_7.setFont(new Font("Tahoma", Font.BOLD, 13));
+			lblNewLabel_7.setBounds(28, 83, 180, 14);
+			panel_2.add(lblNewLabel_7);
+			JLabel lblNewLabel_8 = new JLabel("Quantité des livres disponibles");
+			lblNewLabel_8.setFont(new Font("Tahoma", Font.BOLD, 13));
+			lblNewLabel_8.setBounds(210, 83, 209, 14);
+			panel_2.add(lblNewLabel_8);
+			
+			JLabel lblNewLabel_9 = new JLabel("Quantité des livres perdus");
+			lblNewLabel_9.setFont(new Font("Tahoma", Font.BOLD, 13));
+			lblNewLabel_9.setBounds(429, 83, 209, 14);
+			panel_2.add(lblNewLabel_9);
+			
+			JLabel lblNewLabel_12 = new JLabel("Quantité des livres en retard");
+			lblNewLabel_12.setFont(new Font("Tahoma", Font.BOLD, 13));
+			lblNewLabel_12.setBounds(623, 83, 209, 14);
+			panel_2.add(lblNewLabel_12);
+			
+			JLabel lblNewLabel_13 = new JLabel("Quantité des livres empruntés");
+			lblNewLabel_13.setFont(new Font("Tahoma", Font.BOLD, 13));
+			lblNewLabel_13.setBounds(833, 83, 209, 14);
+			panel_2.add(lblNewLabel_13);
+			
+			JLabel lblNewLabel_10 = new JLabel("La liste de tous les livres");
+			lblNewLabel_10.setFont(new Font("Tahoma", Font.BOLD, 13));
+			lblNewLabel_10.setBounds(11, 319, 180, 14);
+			panel_2.add(lblNewLabel_10);
+			
+			JLabel lblNewLabel_11 = new JLabel("La liste des livres empruntés");
+			lblNewLabel_11.setFont(new Font("Tahoma", Font.BOLD, 13));
+			lblNewLabel_11.setBounds(12, 521, 216, 14);
+			panel_2.add(lblNewLabel_11);
+			// statistiques
+			JLabel total_statistique = new JLabel("0");
+			total_statistique.setHorizontalAlignment(SwingConstants.CENTER);
+			total_statistique.setFont(new Font("Tahoma", Font.BOLD, 14));
+			total_statistique.setBounds(89, 118, 46, 14);
+			panel_2.add(total_statistique);
+			
+			JLabel total_disponible = new JLabel("0");
+			total_disponible.setHorizontalAlignment(SwingConstants.CENTER);
+			total_disponible.setFont(new Font("Tahoma", Font.BOLD, 14));
+			total_disponible.setBounds(277, 118, 46, 14);
+			panel_2.add(total_disponible);
+			
+			JLabel total_perdu = new JLabel("0");
+			total_perdu.setFont(new Font("Tahoma", Font.BOLD, 14));
+			total_perdu.setHorizontalAlignment(SwingConstants.CENTER);
+			total_perdu.setBounds(484, 118, 46, 14);
+			panel_2.add(total_perdu);
+			
+			JLabel total_rtard = new JLabel("0");
+			total_rtard.setFont(new Font("Tahoma", Font.BOLD, 14));
+			total_rtard.setHorizontalAlignment(SwingConstants.CENTER);
+			total_rtard.setBounds(700, 118, 46, 14);
+			panel_2.add(total_rtard);
+			
+			JLabel total_emprunté = new JLabel("0");
+			total_emprunté.setFont(new Font("Tahoma", Font.BOLD, 14));
+			total_emprunté.setHorizontalAlignment(SwingConstants.CENTER);
+			total_emprunté.setBounds(930, 118, 46, 14);
+			panel_2.add(total_emprunté);
+			
+			ArrayList<Integer> statistiques = new ArrayList<>();
+			statistiques = LivreController.AfficherStatistiques();
+			
+			total_statistique.setText(String.valueOf(statistiques.get(0)));
+			total_disponible.setText(String.valueOf(statistiques.get(1)));
+			total_perdu.setText(String.valueOf(statistiques.get(2)));
+			total_emprunté.setText(String.valueOf(statistiques.get(3)));
+			total_rtard.setText(String.valueOf(statistiques.get(4)));
+
+			// fin Statistiques
 			btnNewButton_3.setVisible(false);
 			btnNewButton_1.setVisible(true);
 			btnNewButton_2.setVisible(true);
 			btnNewButton.setVisible(true);
 			btnNewButton_4.setVisible(false);
 		}
+		JButton btnNewButton_7 = new JButton("Ajouter un auteur");
+		btnNewButton_7.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				AuteurController.addAuteur(select_auteur);
+			}
+		});
+		btnNewButton_7.setBackground(new Color(255, 215, 0));
+		btnNewButton_7.setFont(new Font("Tahoma", Font.BOLD, 13));
+		btnNewButton_7.setBounds(27, 496, 207, 49);
+		panel_1.add(btnNewButton_7);
 
     }
 	

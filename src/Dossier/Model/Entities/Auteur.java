@@ -2,10 +2,8 @@ package Dossier.Model.Entities;
 
 
 public class Auteur {
-	private  int id;
 	private String nom;	
-    public Auteur(String nom,int id) {
-    	this.id = id;
+    public Auteur(String nom) {
 		this.nom = nom;
    }
    public String getNom() {
@@ -15,7 +13,4 @@ public class Auteur {
 	   this.nom = nom;
    }
   
-   public int getId() {
-	   return id;
-   }
 }

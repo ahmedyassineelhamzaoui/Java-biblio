@@ -1,6 +1,8 @@
 package Dossier.View;
 
 import java.sql.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.awt.EventQueue;
 
 import javax.swing.ButtonGroup;
@@ -45,10 +47,12 @@ public class Register extends JFrame {
 	private JTextField goLogin;
 	private JPasswordField passWord;
 	private JPasswordField confirmPassword;
-
+//	private static final String CIN_REGEX = "^[A-Z]{1}[A-Z|D]\\\\d{6,8}$";
+//	private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
 	/**
 	 * Launch the application.
 	 */
+	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -71,6 +75,20 @@ public class Register extends JFrame {
     {
          return  p1.equals(p2) ;
     }
+//    public static boolean validate(String cin) {
+//        
+//        Pattern pattern = Pattern.compile(CIN_REGEX);
+//        Matcher matcher = pattern.matcher(cin);
+//        
+//        return matcher.matches();
+//    }
+//	public static boolean validateMail(String mail) {
+//	        
+//	    Pattern pattern = Pattern.compile(EMAIL_REGEX);
+//	    Matcher matcher = pattern.matcher(mail);
+//	        
+//	    return matcher.matches();
+//	}
 	/**
 	 * Create the frame.
 	 */
@@ -235,18 +253,18 @@ public class Register extends JFrame {
 		JButton registerButton = new JButton("Créer mon compte");
 		registerButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				String name = naMe.getText();
+				String cin  = userCin.getText();
+				String mail = email.getText();
+				String password = String.valueOf(passWord.getPassword());
+				String confirmpassword = String.valueOf(confirmPassword.getPassword());
+				String tele     = phone.getText();
+				String gender   = "Homme";
+				if(!radio1.isSelected()) gender   = "Femme";
 				
 				if(checkFeilds()) {
-					JOptionPane.showMessageDialog(null, "merci de remplire tous les champs ","message d'erreur",JOptionPane.ERROR_MESSAGE);
-				}else {
-					String name = naMe.getText();
-					String cin  = userCin.getText();
-					String mail = email.getText();
-					String password = String.valueOf(passWord.getPassword());
-					String confirmpassword = String.valueOf(confirmPassword.getPassword());
-					String tele     = phone.getText();
-					String gender   = "Homme";
-					if(!radio1.isSelected()) gender   = "Femme";
+					JOptionPane.showMessageDialog(null, "merci de remplire tous les champs ","message",JOptionPane.ERROR_MESSAGE);
+				}else {					
 					if(!passwordMatch(password,confirmpassword)) {
 						JOptionPane.showMessageDialog(null,"les deux mot de pass ne sont pas identiques","mot de passe erreur",JOptionPane.ERROR_MESSAGE);
 					}

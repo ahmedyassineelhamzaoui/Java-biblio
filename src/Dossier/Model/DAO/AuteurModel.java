@@ -4,6 +4,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
+import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
+
 import Dossier.Database.ConnexionDB;
 
 public class AuteurModel {
@@ -65,6 +68,22 @@ public class AuteurModel {
 			e.getMessage();
 		}
 		return name;
+	}
+	public static void addAuteur(String nom,JComboBox<String> select_auteur)
+	{
+		PreparedStatement ps;
+		String query = "INSERT INTO auteur(name) VALUES(?) ";
+			
+		try {
+			ps = ConnexionDB.getConnection().prepareStatement(query);
+			ps.setString(1, nom);
+			if(ps.executeUpdate() != 0) {
+				JOptionPane.showMessageDialog(null, "l'auteur a été créer avec succes","message",JOptionPane.PLAIN_MESSAGE);
+				select_auteur.addItem(nom);
+			}
+		}catch(Exception e) {
+			JOptionPane.showMessageDialog(null,"l'auteur que vous avez saisie existe déja","message",JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 }
